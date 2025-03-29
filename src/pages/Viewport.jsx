@@ -5,6 +5,8 @@ import '../styles/pages/viewport.css';
 
 import Panel from '../components/Panel.jsx';
 
+import Camera from '../components/panels/Camera.jsx';
+
 export default class Viewport extends React.Component {
 	constructor(props) {
 		super(props);
@@ -68,26 +70,35 @@ export default class Viewport extends React.Component {
 					<Panel
 						slot={this.getSlot()}
 						item='Camera'
-					>A</Panel>
+						id='camera'
+					>
+						<Camera />
+					</Panel>
+
+
 
 					<Panel
 						slot={this.getSlot()}
 						item='Preview'
+						id='preview'
 					>B</Panel>
 
 					<Panel
 						slot={this.getSlot()}
 						item='Camera Options'
+						id='camera-options'
 					>C</Panel>
 
 					<Panel
 						slot={this.getSlot()}
 						item='Frames'
+						id='frames'
 					>D</Panel>
 
 					<Panel
 						slot={this.getSlot()}
 						item='Output'
+						id='output'
 					>E</Panel>
 				</main>
 			</>

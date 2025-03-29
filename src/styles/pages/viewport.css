@@ -30,3 +30,8 @@
 #viewport > .panel:nth-child(5) {
 	grid-area: e;
 }
+
+#cameraCanvas {
+	max-width: 100%;
+	max-height: 100%;
+}
