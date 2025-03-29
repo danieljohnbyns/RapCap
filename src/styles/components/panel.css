@@ -1,0 +1,77 @@
+.panel {
+	position: relative;
+
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	vertical-align: middle;
+}
+.panel > .container {
+	width: 100%;
+	height: 100%;
+	border-radius: 1rem;
+	border: solid 0.125rem var(--color-primary);
+	overflow: hidden;
+
+	background-color: color-mix(in oklab, var(--color-primary) 50%, var(--color-dark));
+}
+
+
+
+.panel > .container > header {
+	position: relative;
+	width: 100%;
+	padding: 1rem 0;
+
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: var(--color-primary);
+	z-index: 2;
+}
+
+
+
+.panel > .container > .content {
+	position: relative;
+	width: 100%;
+	padding: 1rem;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	vertical-align: middle;
+
+	z-index: 1;
+}
+
+
+
+.panel[data-swapy-highlighted] {
+	opacity: 1;
+}
+.panel[data-swapy-highlighted] > .container {
+	position: relative;
+	background-color: rgba(var(--rgb-primary), 0.25);
+	z-index: 10;
+}
+.panel.swapy-destination::before {
+	content: "";
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	right: 1rem;
+	bottom: 1rem;
+
+	border-radius: 1rem;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: rgba(var(--rgb-primary-complement), 0.25);
+	z-index: -1;
+}

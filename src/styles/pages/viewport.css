@@ -1,0 +1,32 @@
+#viewport {
+	width: 100%;
+	height: 100vh;
+	padding: 1rem;
+
+	display: grid;
+	grid-template:
+		"a a a b b b" 1fr
+		"c c d d e e" 1fr
+		/ 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-gap: 1rem;
+
+	background-color: rgba(var(--rgb-primary), 0.25);
+
+	overflow: hidden;
+}
+
+#viewport > .panel:nth-child(1) {
+	grid-area: a;
+}
+#viewport > .panel:nth-child(2) {
+	grid-area: b;
+}
+#viewport > .panel:nth-child(3) {
+	grid-area: c;
+}
+#viewport > .panel:nth-child(4) {
+	grid-area: d;
+}
+#viewport > .panel:nth-child(5) {
+	grid-area: e;
+}

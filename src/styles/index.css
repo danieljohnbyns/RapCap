@@ -1,0 +1,102 @@
+:root {
+	--color-primary: #0b0055;
+	--color-secondary: #00b4d8;
+	--color-primary-complement: #ed254e;
+
+	--color-plain: #f1f1f1;
+	--color-plain-complement: #1f1f1f;
+
+	--color-light: #ffffff;
+	--color-dark: #000000;
+
+	--transition-speed: 0.25s;
+
+	--rgb-primary: 11, 0, 85;
+	--rgb-secondary: 0, 180, 216;
+	--rgb-primary-complement: 237, 37, 78;
+
+	--rgb-plain: 241, 241, 241;
+	--rgb-plain-complement: 31, 31, 31;
+
+	--rgb-light: 255, 255, 255;
+	--rgb-dark: 0, 0, 0;
+
+	font-family: "Source Sans Pro", sans-serif;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	image-rendering: crisp-edges;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: "Source Sans Pro", sans-serif;
+
+	background-color: var(--color-dark);
+	color: var(--color-light);
+}
+
+* {
+	margin: 0;
+	padding: 0;
+
+	box-sizing: border-box;
+	font-family: "Source Sans Pro", sans-serif;
+
+	font-size: 2rem;
+	line-height: 1;
+}
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Source Sans Pro", sans-serif;
+}
+h1 {
+	font-size: 5rem;
+}
+h2 {
+	font-size: 4rem;
+}
+h3 {
+	font-size: 3.5rem;
+}
+h4 {
+	font-size: 3rem;
+}
+h5 {
+	font-size: 2.5rem;
+}
+h6 {
+	font-size: 2rem;
+}
+p {
+	font-size: 2rem;
+}
+b {
+	font-family: "Source Sans Pro", sans-serif;
+	font-size: inherit;
+}
+html {
+	font-size: calc(62.5% / 1.55);
+}
+
+.noselect {
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+									supported by Chrome, Edge, Opera and Firefox */
+}

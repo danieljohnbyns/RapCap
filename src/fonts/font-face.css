@@ -1,0 +1,99 @@
+/* -------------------- Source Sans Pro -------------------- */
+/* Normal */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url('./Source Sans Pro/SourceSansPro-Regular.otf') format('opentype');
+}
+/* Italic */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 400;
+	src: local('Source Sans Pro Italic'), local('SourceSansPro-Italic'), url('./Source Sans Pro/SourceSansPro-It.otf') format('opentype');
+}
+/* Bold */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 700;
+	src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'), url('./Source Sans Pro/SourceSansPro-Bold.otf') format('opentype');
+}
+/* Bold Italic */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 700;
+	src: local('Source Sans Pro Bold Italic'), local('SourceSansPro-BoldItalic'), url('./Source Sans Pro/SourceSansPro-BoldIt.otf') format('opentype');
+}
+/* ExtraLight */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 200;
+	src: local('Source Sans Pro ExtraLight'), local('SourceSansPro-ExtraLight'), url('./Source Sans Pro/SourceSansPro-ExtraLight.otf') format('opentype');
+}
+/* ExtraLight Italic */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 200;
+	src: local('Source Sans Pro ExtraLight Italic'), local('SourceSansPro-ExtraLightItalic'), url('./Source Sans Pro/SourceSansPro-ExtraLightIt.otf') format('opentype');
+}
+/* Light */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 300;
+	src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url('./Source Sans Pro/SourceSansPro-Light.otf') format('opentype');
+}
+/* Light Italic */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 300;
+	src: local('Source Sans Pro Light Italic'), local('SourceSansPro-LightItalic'), url('./Source Sans Pro/SourceSansPro-LightIt.otf') format('opentype');
+}
+/* SemiBold */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 600;
+	src: local('Source Sans Pro SemiBold'), local('SourceSansPro-SemiBold'), url('./Source Sans Pro/SourceSansPro-SemiBold.otf') format('opentype');
+}
+/* SemiBold Italic */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 600;
+	src: local('Source Sans Pro SemiBold Italic'), local('SourceSansPro-SemiBoldItalic'), url('./Source Sans Pro/SourceSansPro-SemiBoldIt.otf') format('opentype');
+}
+/* Black */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: 900;
+	src: local('Source Sans Pro Black'), local('SourceSansPro-Black'), url('./Source Sans Pro/SourceSansPro-Black.otf') format('opentype');
+}
+/* Black Italic */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 900;
+	src: local('Source Sans Pro Black Italic'), local('SourceSansPro-BlackItalic'), url('./Source Sans Pro/SourceSansPro-BlackIt.otf') format('opentype');
+}
+/* ExtraBold */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: bolder;
+	font-weight: 800;
+	src: local('Source Sans Pro ExtraBold'), local('SourceSansPro-ExtraBold'), url('./Source Sans Pro/SourceSansPro-ExtraBold.otf') format('opentype');
+}
+/* ExtraBold Italic */
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: italic;
+	font-weight: 800;
+	src: local('Source Sans Pro ExtraBold Italic'), local('SourceSansPro-ExtraBoldItalic'), url('./Source Sans Pro/SourceSansPro-ExtraBoldIt.otf') format('opentype');
+}
