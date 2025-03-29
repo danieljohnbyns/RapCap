@@ -37,8 +37,10 @@
     "style-loader": "^3.3.4"
   },
   "dependencies": {
+    "@electron-fonts/source-sans-pro": "^1.1.0",
     "copy-webpack-plugin": "^13.0.0",
     "electron-squirrel-startup": "^1.0.1",
+    "path-browserify": "^1.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "swapy": "^1.0.5"

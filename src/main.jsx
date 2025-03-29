@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-
-// import './fonts/font-face.css';
+// import './styles/font-face.css';
 import './styles/index.css';
 
 import Viewport from './pages/Viewport.jsx';

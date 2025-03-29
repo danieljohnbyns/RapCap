@@ -26,14 +26,6 @@ module.exports = [
 	},
 	{
 		test: /\.(ttf|otf|eot|svg|woff2|woff)$/,
-		use: [
-			{
-				loader: 'file-loader',
-				options: {
-					name: '[path][name].[ext]',
-					publicPath: '../',
-				},
-			},
-		],
+		type: 'asset/resource'
 	}
 ];

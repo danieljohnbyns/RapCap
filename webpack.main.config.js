@@ -6,16 +6,15 @@ module.exports = {
 		rules: require('./webpack.rules')
 	},
 	resolve: {
-		extensions: ['.js', '.jsx', '.json'],
-		extensionAlias: {
-			'.js': ['.js', '.jsx'],
-			'.json': ['.json', '.node']
+		extensions: ['', '.js', '.jsx', '.ts', '.tsx'],
+		fallback: {
+			path: require.resolve('path-browserify')
 		}
 	},
 	plugins: [
 		new CopyPlugin({
 			patterns: [
-				{ from: 'src/fonts', to: 'fonts' }
+				{ from: 'src/assets', to: 'assets' }
 			]
 		})
 	]
