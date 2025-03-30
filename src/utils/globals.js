@@ -8,7 +8,17 @@ const globals = {
 	/**
 	 * @type {() => Promise<InputDeviceInfo[]>}
 	 */
-	getMediaDevices: null
+	getMediaDevices: null,
+
+	/**
+	 * @type {(countdown: Number) => Void}
+	 */
+	shoot: null,
+
+	/**
+	 * @type {String}
+	 */
+	buffer: ''
 };
 
 window.globals = globals;

@@ -22,15 +22,9 @@ export default class Camera extends React.Component {
 		this.state = {
 			devices: [],
 			selectedDeviceId: null,
+
+			countdown: 0
 		};
-	};
-
-	componentDidMount() {
-		this.getMediaDevices();
-		this.startCamera();
-
-		globals.changeCamera = this.changeCamera;
-		globals.getMediaDevices = this.getMediaDevices;
 	};
 
 	getMediaDevices = async () => {
@@ -117,6 +111,55 @@ export default class Camera extends React.Component {
 		draw();
 	};
 
+	shoot = (countdown = 0) => {
+		const captureFrame = async () => {
+			const canvas = this.canvasRef.current;
+			if (canvas) {
+				// Convert the current canvas frame to a data URL
+				const dataUrl = canvas.toDataURL('image/png');
+
+				// Save the data URL into the globals buffer
+				globals.buffer = dataUrl;
+
+				console.log('Frame captured and saved to globals.buffer');
+				// Download the image
+				const link = document.createElement('a');
+				link.href = globals.buffer;
+				link.download = 'captured_image.png';
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				console.log('Image downloaded');
+			};
+		};
+
+		if (countdown > 0) {
+			console.log(`Countdown started: ${countdown} seconds`);
+			let timer = countdown;
+
+			const interval = setInterval(() => {
+				console.log(`Countdown: ${timer}`);
+				timer--;
+
+				if (timer <= 0) {
+					clearInterval(interval);
+					captureFrame();
+				};
+			}, 1000);
+		} else {
+			captureFrame();
+		};
+	};
+
+	componentDidMount() {
+		this.getMediaDevices();
+		this.startCamera();
+
+		globals.changeCamera = this.changeCamera;
+		globals.getMediaDevices = this.getMediaDevices;
+		globals.shoot = this.shoot;
+	};
+
 	render() {
 		return (
 			<>
@@ -138,30 +181,37 @@ export default class Camera extends React.Component {
 					<Button
 						type='primary'
 						icon={<CameraOutlined />}
-						onClick={() => { }}
+						onClick={() => {
+							this.shoot(this.state.countdown);
+						}}
 					>
 						Shoot
 					</Button>
 					<Select
 						id='countdown'
-						defaultValue='0'
+						defaultValue={0}
 						placeholder='Countdown'
 						options={[
 							{
-								value: '0',
+								value: 0,
 								label: 'Instant'
 							},
 							{
-								value: '3',
+								value: 3,
 								label: '3 Seconds'
 							},
 							{
-								value: '5',
+								value: 5,
 								label: '5 Seconds'
 							}
 						]}
 						variant='outlined'
 						suffixIcon={<DownOutlined />}
+
+						onChange={(value) => {
+							this.setState({ countdown: value });
+							globals.shoot(value);
+						}}
 					/>
 				</div>
 			</>
