@@ -27,14 +27,14 @@ export default class Frames extends React.Component {
 		return (
 			<div id='framesOptionsContainer'>
 				<Row
-					style={{ alignItems: 'center', }}
+					style={{ alignItems: 'center' }}
 				>
 					<Col span={6}>
 						<p>Frames</p>
 					</Col>
 					<Col span={18}>
 						<InputNumber
-							style={{ width: '100%', }}
+							style={{ width: '100%' }}
 							defaultValue={globals.options.frames.length}
 							onChange={(value) => {
 								// Check if increasing or decreasing the number of frames
@@ -74,14 +74,11 @@ export default class Frames extends React.Component {
 
 				{this.state.frames.map((frame, index) => {
 					return (
-						<div>
-							<Divider
-								key={`frameDivider${index}`}
-							>
+						<div key={`frame${index}`}>
+							<Divider>
 								{`Frame ${index + 1}`}
 							</Divider>
 							<div
-								key={`frameContainer${index}`}
 								style={{
 									display: 'flex',
 									flexDirection: 'column',
@@ -89,15 +86,14 @@ export default class Frames extends React.Component {
 								}}
 							>
 								<Row
-									key={`frameRow${index}-Size`}
-									style={{ alignItems: 'center', }}
+									style={{ alignItems: 'center' }}
 								>
 									<Col span={6}>
 										<p>Size</p>
 									</Col>
 									<Col span={8}>
 										<InputNumber
-											style={{ width: '100%', }}
+											style={{ width: '100%' }}
 											defaultValue={frame.size.width}
 											onChange={(value) => {
 												globals.options.frames[index].size.width = value;
@@ -111,12 +107,12 @@ export default class Frames extends React.Component {
 									</Col>
 
 									<Col span={2}>
-										<p style={{ textAlign: 'center', }}>x</p>
+										<p style={{ textAlign: 'center' }}>x</p>
 									</Col>
 
 									<Col span={8}>
 										<InputNumber
-											style={{ width: '100%', }}
+											style={{ width: '100%' }}
 											defaultValue={frame.size.height}
 											onChange={(value) => {
 												globals.options.frames[index].size.height = value;
@@ -131,15 +127,14 @@ export default class Frames extends React.Component {
 								</Row>
 
 								<Row
-									key={`frameRow${index}-Position`}
-									style={{ alignItems: 'center', }}
+									style={{ alignItems: 'center' }}
 								>
 									<Col span={6}>
 										<p>Position</p>
 									</Col>
 									<Col span={8}>
 										<InputNumber
-											style={{ width: '100%', }}
+											style={{ width: '100%' }}
 											defaultValue={frame.position.x}
 											onChange={(value) => {
 												globals.options.frames[index].position.x = value;
@@ -153,12 +148,12 @@ export default class Frames extends React.Component {
 									</Col>
 
 									<Col span={2}>
-										<p style={{ textAlign: 'center', }}>x</p>
+										<p style={{ textAlign: 'center' }}>x</p>
 									</Col>
 
 									<Col span={8}>
 										<InputNumber
-											style={{ width: '100%', }}
+											style={{ width: '100%' }}
 											defaultValue={frame.position.y}
 											onChange={(value) => {
 												globals.options.frames[index].position.y = value;
