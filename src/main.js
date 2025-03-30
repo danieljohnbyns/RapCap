@@ -1,6 +1,8 @@
 import { app, BrowserWindow, protocol, Menu, ipcMain, dialog } from 'electron';
 import mime from 'mime';
 import fs from 'fs/promises';
+import path from 'path';
+import log from 'electron-log';
 
 if (require('electron-squirrel-startup')) {
 	app.quit();
@@ -125,6 +127,27 @@ ipcMain.handle('open-image-dialog', async () => {
 	} catch (error) {
 		console.error('File open error:', error);
 		return { error: error.message };
+	};
+});
+ipcMain.handle('save-file', async (_, { fileName, data }) => {
+	try {
+		log.info('Starting file save...');
+		const downloadsPath = app.getPath('downloads');
+		log.debug('Downloads path:', downloadsPath);
+		
+		const filePath = path.join(downloadsPath, fileName);
+		log.debug('Full path:', filePath);
+
+		// Convert base64 to Buffer if needed
+		const fileData = data.startsWith('data:')
+			? Buffer.from(data.split(',')[1], 'base64')
+			: data;
+
+		await fs.writeFile(filePath, fileData);
+		return { success: true, path: filePath };
+	} catch (error) {
+		console.error('Save failed:', error);
+		return { success: false, error: error.message };
 	};
 });
 

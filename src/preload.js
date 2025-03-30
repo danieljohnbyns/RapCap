@@ -5,5 +5,6 @@ ipcRenderer.on('import-image-template', (event, arg) => {
 });
 
 contextBridge.exposeInMainWorld('api', {
-	openImageDialog: () => ipcRenderer.invoke('open-image-dialog')
+	openImageDialog: () => ipcRenderer.invoke('open-image-dialog'),
+	saveFile: (fileName, data) => ipcRenderer.invoke('save-file', { fileName, data })
 });

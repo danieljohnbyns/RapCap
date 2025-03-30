@@ -15,7 +15,7 @@ import {
 
 import globals from '../../utils/globals.js';
 
-export default class Preview extends React.Component {
+export default class cameraOptions extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {

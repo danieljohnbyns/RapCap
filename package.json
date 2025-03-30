@@ -40,12 +40,14 @@
     "@electron-fonts/source-sans-pro": "^1.1.0",
     "antd": "^5.24.5",
     "copy-webpack-plugin": "^13.0.0",
+    "electron-log": "^5.3.3",
     "electron-squirrel-startup": "^1.0.1",
     "fs-extra": "^11.3.0",
     "mime": "^4.0.6",
     "path-browserify": "^1.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "swapy": "^1.0.5"
+    "swapy": "^1.0.5",
+    "sweetalert2": "^11.17.2"
   }
 }

@@ -15,6 +15,11 @@ const globals = {
 	 */
 	snapshot: null,
 
+	/**
+	 * @type {(filename: String, format: String, scale: Number) => Void}
+	 */
+	downloadImage: null,
+
 	options: {
 		countdown: 3,
 		brightness: 100,
@@ -48,17 +53,29 @@ const globals = {
 				}
 			}
 		],
+
+		output: {
+			name: (() => {
+				const date = new Date();
+				return `photo_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
+			})(),
+			scale: 1,
+			/**
+			 * @type {'png' | 'jpeg' | 'webp'}
+			 */
+			format: 'png'
+		}
 	},
 
 	saveOptions: () => {
-		// Save options to local storage
 		localStorage.setItem('options', JSON.stringify(globals.options));
 	},
 	loadOptions: () => {
-		// Load options from local storage
 		const options = localStorage.getItem('options');
 		if (options) {
-			globals.options = JSON.parse(options);
+			try {
+				globals.options = JSON.parse(options);
+			} catch (e) { };
 		};
 	}
 };

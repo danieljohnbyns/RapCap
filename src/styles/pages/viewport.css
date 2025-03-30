@@ -5,9 +5,9 @@
 
 	display: grid;
 	grid-template:
-		"a a a b b b" 1fr
-		"a a a b b b" 1fr
-		"c c d d e e" 1fr
+		"a a a a b b b b" 1fr
+		"a a a a b b b b" 1fr
+		"c c c d d d e e" 1fr
 		/ 1fr 1fr 1fr 1fr 1fr 1fr;
 	grid-gap: 1rem;
 
@@ -60,7 +60,8 @@
 }
 
 #cameraOptionsContainer,
-#framesOptionsContainer {
+#framesOptionsContainer,
+#outputOptionsContainer {
 	flex: 1;
 	display: flex;
 	flex-direction: column;

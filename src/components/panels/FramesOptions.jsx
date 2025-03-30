@@ -8,7 +8,7 @@ import {
 
 import globals from '../../utils/globals.js';
 
-export default class Frames extends React.Component {
+export default class FramesOptions extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
