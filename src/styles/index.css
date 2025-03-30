@@ -100,3 +100,24 @@ html {
 	user-select: none; /* Non-prefixed version, currently
 									supported by Chrome, Edge, Opera and Firefox */
 }
+
+* {
+	box-shadow: none !important;
+}
+
+::-webkit-scrollbar {
+	width: 2rem;
+	height: 2rem;
+}
+::-webkit-scrollbar-thumb {
+	background-color: var(--color-primary-complement);
+	border: solid 0.5rem var(--color-primary);
+	border-radius: 1rem;
+}
+::-webkit-scrollbar-track {
+	background-color: var(--color-primary);
+}
+::-webkit-scrollbar-corner {
+	background-color: var(--color-primary-complement);
+	border-radius: 0.5rem;
+}

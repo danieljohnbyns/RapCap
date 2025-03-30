@@ -10,19 +10,19 @@ export default class Camera extends React.Component {
 
 	componentDidMount() {
 		// Access the user's webcam
-		navigator.mediaDevices
-			.getUserMedia({ video: true })
-			.then((stream) => {
-				// Set the video source to the webcam stream
-				this.videoRef.current.srcObject = stream;
-				this.videoRef.current.onloadedmetadata = () => {
-					this.videoRef.current.play();
-					this.updateCanvas();
-				};
-			})
-			.catch((err) => {
-				console.error('Error accessing webcam:', err);
-			});
+		// navigator.mediaDevices
+		// 	.getUserMedia({ video: true })
+		// 	.then((stream) => {
+		// 		// Set the video source to the webcam stream
+		// 		this.videoRef.current.srcObject = stream;
+		// 		this.videoRef.current.onloadedmetadata = () => {
+		// 			this.videoRef.current.play();
+		// 			this.updateCanvas();
+		// 		};
+		// 	})
+		// 	.catch((err) => {
+		// 		console.error('Error accessing webcam:', err);
+		// 	});
 	};
 
 	updateCanvas = () => {

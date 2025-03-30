@@ -31,6 +31,9 @@
 #viewport > .panel:nth-child(5) {
 	grid-area: e;
 }
+#viewport > .panel:not(:nth-child(1)):not(:nth-child(2)) {
+	max-height: calc(50vh - 16rem);
+}
 
 #cameraContainer {
 	flex: 1;
@@ -52,4 +55,13 @@
 #previewControls button {
 	flex: 1 !important;
 	width: 100%;
+}
+
+#cameraOptionsContainer {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: stretch;
+	gap: 2rem;
 }

@@ -5,11 +5,16 @@ import {
 	CameraOutlined,
 	DownOutlined,
 	ExportOutlined,
-	DeleteOutlined
+	DeleteOutlined,
+	WarningOutlined
 } from '@ant-design/icons';
 import {
 	Button,
 	Select,
+	Slider,
+	Switch,
+	Popover,
+	Row, Col,
 } from 'antd';
 
 import '../styles/pages/viewport.css';
@@ -113,7 +118,7 @@ export default class Viewport extends React.Component {
 										label: '5 Seconds'
 									}
 								]}
-								variant='filled'
+								variant='outlined'
 								suffixIcon={<DownOutlined />}
 							/>
 						</div>
@@ -153,7 +158,130 @@ export default class Viewport extends React.Component {
 						slot={this.getSlot()}
 						item='Camera Options'
 						id='camera-options'
-					>C</Panel>
+					>
+						<div id='cameraOptionsContainer'>
+							<Row
+								style={{ alignItems: 'center', }}
+							>
+								<Col span={6}>
+									<p>Device</p>
+								</Col>
+								<Col span={18}>
+									<Select
+										id='cameraOptions'
+										defaultValue='webcam'
+										placeholder='Camera Options'
+										style={{ width: '100%' }}
+										options={[
+											{
+												value: 'webcam',
+												label: 'Webcam'
+											},
+											{
+												value: 'usb',
+												label: 'USB Camera'
+											}
+										]}
+										variant='outlined'
+										suffixIcon={<DownOutlined />}
+									/>
+								</Col>
+							</Row>
+
+							<Row
+								style={{ alignItems: 'center', }}
+							>
+								<Col span={6}>
+									<p>Brightness</p>
+								</Col>
+								<Col span={1} />
+								<Col span={16}>
+									<Slider
+										id='brightness'
+										defaultValue={0}
+										min={-100}
+										max={100}
+										step={1}
+										marks={{
+											'-100': '-100',
+											'0': '0',
+											'100': '100'
+										}}
+									/>
+								</Col>
+								<Col span={1} />
+							</Row>
+
+							<Row
+								style={{ alignItems: 'center', }}
+							>
+								<Col span={6}>
+									<p>Contrast</p>
+								</Col>
+								<Col span={1} />
+								<Col span={16}>
+									<Slider
+										id='contrast'
+										defaultValue={0}
+										min={-100}
+										max={100}
+										step={1}
+										marks={{
+											'-100': '-100',
+											'0': '0',
+											'100': '100'
+										}}
+									/>
+								</Col>
+								<Col span={1} />
+							</Row>
+
+							<Row
+								style={{ alignItems: 'center', }}
+							>
+								<Col span={6}>
+									<Popover
+										trigger={['hover']}
+
+										content={
+											<div>
+												<h6><WarningOutlined /> Warning!</h6>
+												<br />
+												<p>Detect Faces is still experimental and may not work as expected.</p>
+											</div>
+										}
+
+										showArrow={false}
+										arrow={false}
+									>
+										<p><WarningOutlined /> Detect Faces</p>
+									</Popover>
+								</Col>
+								<Col span={18}>
+									<Switch
+										id='detectFaces'
+										defaultChecked={false}
+										onChange={(checked) => { }}
+									/>
+								</Col>
+							</Row>
+
+							<Row
+								style={{ alignItems: 'center', }}
+							>
+								<Col span={6}>
+									<p>Live Preview</p>
+								</Col>
+								<Col span={18}>
+									<Switch
+										id='livePreview'
+										defaultChecked={true}
+										onChange={(checked) => { }}
+									/>
+								</Col>
+							</Row>
+						</div>
+					</Panel>
 
 					<Panel
 						slot={this.getSlot()}

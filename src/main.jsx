@@ -48,7 +48,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 					colorIcon: rootToHex('--color-light'),
 					colorIconHover: rootToHex('--color-light'),
 				},
-				algorithm: theme.darkAlgorithm
+				components: {
+					Button: {
+						boxShadow: 'none'
+					}
+				},
+				algorithm: [
+					theme.defaultAlgorithm
+				]
 			}}
 		>
 			<Viewport />
