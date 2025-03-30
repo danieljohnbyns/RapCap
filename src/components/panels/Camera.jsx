@@ -19,11 +19,13 @@ export default class Camera extends React.Component {
 		this.videoRef = React.createRef();
 		this.canvasRef = React.createRef();
 		this.parentRef = React.createRef();
+		this.shutterOverlayRef = React.createRef();
+		this.countdownRef = React.createRef();
 		this.state = {
 			devices: [],
 			selectedDeviceId: null,
-
-			countdown: 0
+			countdown: 0,
+			currentCountdown: 0
 		};
 	};
 
@@ -72,7 +74,7 @@ export default class Camera extends React.Component {
 		const stream = this.videoRef.current.srcObject;
 		if (stream) {
 			stream.getTracks().forEach(track => track.stop());
-		}
+		};
 
 		// Start the camera with the new device
 		this.startCamera(deviceId);
@@ -111,6 +113,36 @@ export default class Camera extends React.Component {
 		draw();
 	};
 
+	startCountdown = (seconds) => {
+		return new Promise((resolve) => {
+			this.setState({ currentCountdown: seconds }, () => {
+				const countdownInterval = setInterval(() => {
+					this.setState(prevState => {
+						if (prevState.currentCountdown <= 1) {
+							clearInterval(countdownInterval);
+							resolve();
+							return { currentCountdown: 0 };
+						};
+						return { currentCountdown: prevState.currentCountdown - 1 };
+					});
+				}, 1000);
+			});
+		});
+	};
+
+
+	triggerShutterEffect = () => {
+		const overlay = this.shutterOverlayRef.current;
+		if (overlay) {
+			overlay.classList.add('flash');
+			const onAnimationEnd = () => {
+				overlay.classList.remove('flash');
+				overlay.removeEventListener('animationend', onAnimationEnd);
+			};
+			overlay.addEventListener('animationend', onAnimationEnd);
+		};
+	};	
+
 	shoot = (countdown = 0) => {
 		const captureFrame = async () => {
 			const canvas = this.canvasRef.current;
@@ -122,6 +154,9 @@ export default class Camera extends React.Component {
 				globals.buffer = dataUrl;
 
 				console.log('Frame captured and saved to globals.buffer');
+
+				this.triggerShutterEffect();
+
 				// Download the image
 				const link = document.createElement('a');
 				link.href = globals.buffer;
@@ -134,18 +169,9 @@ export default class Camera extends React.Component {
 		};
 
 		if (countdown > 0) {
-			console.log(`Countdown started: ${countdown} seconds`);
-			let timer = countdown;
-
-			const interval = setInterval(() => {
-				console.log(`Countdown: ${timer}`);
-				timer--;
-
-				if (timer <= 0) {
-					clearInterval(interval);
-					captureFrame();
-				};
-			}, 1000);
+			this.startCountdown(countdown).then(() => {
+				captureFrame();
+			});
 		} else {
 			captureFrame();
 		};
@@ -174,6 +200,17 @@ export default class Camera extends React.Component {
 							id='cameraCanvas'
 							style={{ display: 'block', margin: '0 auto' }}
 						></canvas>
+
+						<div
+							className='shutter-overlay'
+							ref={this.shutterOverlayRef}
+						/>
+
+						{this.state.currentCountdown > 0 && (
+							<div className='countdown-display'>
+								{this.state.currentCountdown}
+							</div>
+						)}
 					</div>
 				</div>
 
@@ -210,7 +247,6 @@ export default class Camera extends React.Component {
 
 						onChange={(value) => {
 							this.setState({ countdown: value });
-							globals.shoot(value);
 						}}
 					/>
 				</div>
