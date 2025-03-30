@@ -108,7 +108,7 @@ export default class Camera extends React.Component {
 
 				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 			};
-			requestAnimationFrame(draw);
+			setTimeout(() => requestAnimationFrame(draw), 1000 / 20); // 20 fps
 		};
 		draw();
 	};

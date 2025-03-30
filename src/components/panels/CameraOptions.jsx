@@ -95,13 +95,14 @@ export default class Preview extends React.Component {
 							defaultValue={0}
 							min={-100}
 							max={100}
-							step={1}
+							step={5}
+							included={false}
 							marks={{
 								'-100': '-100',
 								'0': '0',
 								'100': '100'
 							}}
-							onChange={(value) => globals.setBrightness(value)}
+							// onChange={(value) => globals.setBrightness(value)}
 						/>
 					</Col>
 					<Col span={1} />
@@ -120,13 +121,14 @@ export default class Preview extends React.Component {
 							defaultValue={0}
 							min={-100}
 							max={100}
-							step={1}
+							step={5}
+							included={false}
 							marks={{
 								'-100': '-100',
 								'0': '0',
 								'100': '100'
 							}}
-							onChange={(value) => globals.setContrast(value)}
+							// onChange={(value) => globals.setContrast(value)}
 						/>
 					</Col>
 					<Col span={1} />
