@@ -41,16 +41,30 @@ export default class Frames extends React.Component {
 								if (value > this.state.frameCount) {
 									const increse = value - this.state.frameCount;
 									for (let i = 0; i < increse; i++) {
-										globals.options.frames.push({
-											size: {
-												width: 100,
-												height: 100
-											},
-											position: {
-												x: 0,
-												y: 0
-											}
-										});
+										if (this.state.frames.length > 0) {
+											const lastFrame = this.state.frames[this.state.frames.length - 1];
+											globals.options.frames.push({
+												size: {
+													width: lastFrame.size.width,
+													height: lastFrame.size.height
+												},
+												position: {
+													x: lastFrame.position.x + 100,
+													y: lastFrame.position.y + 100
+												}
+											});
+										} else {
+											globals.options.frames.push({
+												size: {
+													width: 100,
+													height: 100
+												},
+												position: {
+													x: 0,
+													y: 0
+												}
+											});
+										}
 									};
 								} else if (value < this.state.frameCount) {
 									const decrease = this.state.frameCount - value;

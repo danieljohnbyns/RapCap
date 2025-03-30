@@ -25,7 +25,40 @@ export default class Preview extends React.Component {
 		const ctx = canvas.getContext('2d');
 		const parent = this.parentRef.current;
 
+		const frames = globals.options.frames;
+		const frameElements = [];
+		for (const frame of frames) {
+			const frameElement = document.createElement('div');
+			frameElement.className = 'frame';
+			frameElement.style.position = 'absolute';
+			frameElement.style.border = 'solid 0.5rem var(--color-secondary)';
+			frameElement.style.pointerEvents = 'none';
+
+			frameElements.push(frameElement);
+			parent.appendChild(frameElement);
+		};
+
 		const draw = () => {
+			if (globals.options.frames.length !== frameElements.length) {
+				// Remove old frame elements
+				for (const frameElement of frameElements) {
+					parent.removeChild(frameElement);
+				};
+
+				// Create new frame elements
+				frameElements.length = 0;
+				for (const frame of frames) {
+					const frameElement = document.createElement('div');
+					frameElement.className = 'frame';
+					frameElement.style.position = 'absolute';
+					frameElement.style.border = '2px solid red';
+					frameElement.style.pointerEvents = 'none';
+
+					frameElements.push(frameElement);
+					parent.appendChild(frameElement);
+				};
+			};
+
 			const parentWidth = parent.offsetWidth;
 			const parentHeight = parent.offsetHeight;
 
@@ -48,6 +81,21 @@ export default class Preview extends React.Component {
 				ctx.drawImage(this.imageTemplate, 0, 0, canvas.width, canvas.height);
 
 			requestAnimationFrame(draw);
+
+			// Get the ratio of canvas' original size to the current size
+			const ratioX = canvas.offsetWidth / this.imageTemplate.width;
+			const ratioY = canvas.offsetHeight / this.imageTemplate.height;
+			const ratio = Math.min(ratioX, ratioY);
+
+			for (let i = 0; i < frames.length; i++) {
+				const frame = frames[i];
+				const frameElement = frameElements[i];
+
+				frameElement.style.width = `${frame.size.width * ratio}px`;
+				frameElement.style.height = `${frame.size.height * ratio}px`;
+				frameElement.style.left = `${(frame.position.x * ratio) + canvas.offsetLeft}px`;
+				frameElement.style.top = `${(frame.position.y * ratio) + canvas.offsetTop}px`;
+			};
 		};
 
 		draw();
