@@ -95,9 +95,10 @@ const createWindow = () => {
 			label: 'Help',
 			submenu: [
 				{
-					label: 'About',
+					label: 'Github',
 					click() {
-						app.emit('show-about');
+						const { shell } = require('electron');
+						shell.openExternal('https://github.com/danieljohnbyns/RapCap');
 					}
 				}
 			]
