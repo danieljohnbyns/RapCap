@@ -3,7 +3,9 @@ import { createSwapy } from 'swapy';
 
 import {
 	CameraOutlined,
-	DownOutlined
+	DownOutlined,
+	ExportOutlined,
+	DeleteOutlined
 } from '@ant-design/icons';
 import {
 	Button,
@@ -123,7 +125,29 @@ export default class Viewport extends React.Component {
 						slot={this.getSlot()}
 						item='Preview'
 						id='preview'
-					>B</Panel>
+					>
+						<div id='previewContainer'>
+							<canvas id='previewCanvas' />
+						</div>
+
+						<div id='previewControls'>
+							<Button
+								type='primary'
+								icon={<ExportOutlined />}
+								onClick={() => { }}
+							>
+								Launch preview Window
+							</Button>
+
+							<Button
+								type='primary'
+								icon={<DeleteOutlined />}
+								onClick={() => { }}
+							>
+								Clear frames
+							</Button>
+						</div>
+					</Panel>
 
 					<Panel
 						slot={this.getSlot()}
