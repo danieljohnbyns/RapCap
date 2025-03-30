@@ -93,6 +93,7 @@ export default class cameraOptions extends React.Component {
 						<Slider
 							id='brightness'
 							defaultValue={globals.options.brightness}
+							value={globals.options.brightness}
 							min={0}
 							max={500}
 							step={5}
@@ -121,6 +122,7 @@ export default class cameraOptions extends React.Component {
 						<Slider
 							id='contrast'
 							defaultValue={globals.options.contrast}
+							value={globals.options.contrast}
 							min={0}
 							max={500}
 							step={5}

@@ -10,15 +10,27 @@ import {
 import globals from '../../utils/globals.js';
 
 export default class OutputOptions extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			name: globals.options.output.name,
+			scale: globals.options.output.scale,
+			format: globals.options.output.format
+		};
+	};
 	render() {
 		return (
 			<div id='outputOptionsContainer'>
 				<Input
 					style={{ width: '100%' }}
 					defaultValue={globals.options.output.name}
+					value={this.state.name}
 					placeholder='File Name'
 					onChange={(event) => {
 						globals.options.output.name = event.target.value;
+						this.setState({
+							name: event.target.value
+						});
 					}}
 				/>
 
@@ -29,8 +41,12 @@ export default class OutputOptions extends React.Component {
 						<Select
 							style={{ width: '100%' }}
 							defaultValue={globals.options.output.scale}
+							value={this.state.scale}
 							onChange={(value) => {
 								globals.options.output.scale = value;
+								this.setState({
+									scale: value
+								});
 							}}
 
 							options={[
@@ -61,7 +77,13 @@ export default class OutputOptions extends React.Component {
 						<Select
 							style={{ width: '100%' }}
 							defaultValue={globals.options.output.format}
-							value={globals.options.output.format}
+							value={this.state.format}
+							onChange={(value) => {
+								globals.options.output.format = value;
+								this.setState({
+									format: value
+								});
+							}}
 
 							options={[
 								{

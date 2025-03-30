@@ -22,7 +22,7 @@ export default class Camera extends React.Component {
 		this.state = {
 			devices: [],
 			selectedDeviceId: null,
-			countdown: 0,
+			countdown: globals.options.countdown,
 			currentCountdown: 0
 		};
 	};
@@ -205,12 +205,14 @@ export default class Camera extends React.Component {
 						onClick={() => {
 							this.shoot(this.state.countdown);
 						}}
+						disabled={this.state.currentCountdown > 0}
 					>
 						Shoot
 					</Button>
 					<Select
 						id='countdown'
 						defaultValue={globals.options.countdown}
+						value={this.state.countdown}
 						placeholder='Countdown'
 						options={[
 							{
@@ -231,6 +233,7 @@ export default class Camera extends React.Component {
 
 						onChange={(value) => {
 							this.setState({ countdown: value });
+							globals.options.countdown = value;
 						}}
 					/>
 				</div>
