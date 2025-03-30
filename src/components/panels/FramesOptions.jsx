@@ -104,47 +104,6 @@ export default class Frames extends React.Component {
 									style={{ alignItems: 'center' }}
 								>
 									<Col span={6}>
-										<p>Size</p>
-									</Col>
-									<Col span={8}>
-										<InputNumber
-											style={{ width: '100%' }}
-											defaultValue={frame.size.width}
-											onChange={(value) => {
-												globals.options.frames[index].size.width = value;
-												this.setState({
-													frames: globals.options.frames
-												});
-											}}
-											min={0} max={10000} step={1}
-											placeholder='Width'
-										/>
-									</Col>
-
-									<Col span={2}>
-										<p style={{ textAlign: 'center' }}>x</p>
-									</Col>
-
-									<Col span={8}>
-										<InputNumber
-											style={{ width: '100%' }}
-											defaultValue={frame.size.height}
-											onChange={(value) => {
-												globals.options.frames[index].size.height = value;
-												this.setState({
-													frames: globals.options.frames
-												});
-											}}
-											min={0} max={10000} step={1}
-											placeholder='Height'
-										/>
-									</Col>
-								</Row>
-
-								<Row
-									style={{ alignItems: 'center' }}
-								>
-									<Col span={6}>
 										<p>Position</p>
 									</Col>
 									<Col span={8}>
@@ -178,6 +137,47 @@ export default class Frames extends React.Component {
 											}}
 											min={0} max={10000} step={1}
 											placeholder='Y'
+										/>
+									</Col>
+								</Row>
+
+								<Row
+									style={{ alignItems: 'center' }}
+								>
+									<Col span={6}>
+										<p>Size</p>
+									</Col>
+									<Col span={8}>
+										<InputNumber
+											style={{ width: '100%' }}
+											defaultValue={frame.size.width}
+											onChange={(value) => {
+												globals.options.frames[index].size.width = value;
+												this.setState({
+													frames: globals.options.frames
+												});
+											}}
+											min={0} max={10000} step={1}
+											placeholder='Width'
+										/>
+									</Col>
+
+									<Col span={2}>
+										<p style={{ textAlign: 'center' }}>x</p>
+									</Col>
+
+									<Col span={8}>
+										<InputNumber
+											style={{ width: '100%' }}
+											defaultValue={frame.size.height}
+											onChange={(value) => {
+												globals.options.frames[index].size.height = value;
+												this.setState({
+													frames: globals.options.frames
+												});
+											}}
+											min={0} max={10000} step={1}
+											placeholder='Height'
 										/>
 									</Col>
 								</Row>

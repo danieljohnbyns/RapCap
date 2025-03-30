@@ -34,9 +34,6 @@ export default class Preview extends React.Component {
 		for (const frame of frames) {
 			const frameElement = document.createElement('div');
 			frameElement.className = 'frame';
-			frameElement.style.position = 'absolute';
-			frameElement.style.border = 'solid 0.5rem var(--color-secondary)';
-			frameElement.style.pointerEvents = 'none';
 
 			frameElements.push(frameElement);
 			parent.appendChild(frameElement);
@@ -81,6 +78,7 @@ export default class Preview extends React.Component {
 			for (let i = 0; i < this.state.snapshots.length; i++) {
 				const snapshot = this.state.snapshots[i];
 				const frame = frames[i];
+				if (!frame) continue;
 
 				const ratioX = canvas.offsetWidth / this.imageTemplate.width;
 				const ratioY = canvas.offsetHeight / this.imageTemplate.height;
@@ -234,7 +232,9 @@ export default class Preview extends React.Component {
 					<Button
 						type='primary'
 						icon={<DeleteOutlined />}
-						onClick={() => { }}
+						onClick={() => {
+							this.setState({ snapshots: [] });
+						}}
 					>
 						Clear frames
 					</Button>
