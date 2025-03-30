@@ -8,6 +8,7 @@ import Panel from '../components/Panel.jsx';
 import Camera from '../components/panels/Camera.jsx';
 import Preview from '../components/panels/Preview.jsx';
 import CameraOptions from '../components/panels/CameraOptions.jsx';
+import FramesOptions from '../components/panels/FramesOptions.jsx';
 
 export default class Viewport extends React.Component {
 	constructor(props) {
@@ -99,7 +100,9 @@ export default class Viewport extends React.Component {
 						slot={this.getSlot()}
 						item='Frames'
 						id='frames'
-					>D</Panel>
+					>
+						<FramesOptions />
+					</Panel>
 
 					<Panel
 						slot={this.getSlot()}

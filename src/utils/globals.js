@@ -42,7 +42,18 @@ const globals = {
 		 * 		}
 		 * }[]}
 		 */
-		frames: [],
+		frames: [
+			{
+				size: {
+					width: 100,
+					height: 100
+				},
+				position: {
+					x: 0,
+					y: 0
+				}
+			}
+		],
 	}
 };
 
