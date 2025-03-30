@@ -1,27 +1,13 @@
 import React from 'react';
 import { createSwapy } from 'swapy';
 
-import {
-	CameraOutlined,
-	DownOutlined,
-	ExportOutlined,
-	DeleteOutlined,
-	WarningOutlined
-} from '@ant-design/icons';
-import {
-	Button,
-	Select,
-	Slider,
-	Switch,
-	Popover,
-	Row, Col,
-} from 'antd';
-
 import '../styles/pages/viewport.css';
 
 import Panel from '../components/Panel.jsx';
 
 import Camera from '../components/panels/Camera.jsx';
+import Preview from '../components/panels/Preview.jsx';
+import CameraOptions from '../components/panels/CameraOptions.jsx';
 
 export default class Viewport extends React.Component {
 	constructor(props) {
@@ -88,40 +74,7 @@ export default class Viewport extends React.Component {
 						item='Camera'
 						id='camera'
 					>
-						<div id='cameraContainer'>
-							<Camera />
-						</div>
-
-						<div id='cameraControls'>
-							<Button
-								type='primary'
-								icon={<CameraOutlined />}
-								onClick={() => { }}
-							>
-								Shoot
-							</Button>
-							<Select
-								id='shutterSpeed'
-								defaultValue='0'
-								placeholder='Shutter Speed'
-								options={[
-									{
-										value: '0',
-										label: 'Instant'
-									},
-									{
-										value: '3',
-										label: '3 Seconds'
-									},
-									{
-										value: '5',
-										label: '5 Seconds'
-									}
-								]}
-								variant='outlined'
-								suffixIcon={<DownOutlined />}
-							/>
-						</div>
+						<Camera />
 					</Panel>
 
 
@@ -131,27 +84,7 @@ export default class Viewport extends React.Component {
 						item='Preview'
 						id='preview'
 					>
-						<div id='previewContainer'>
-							<canvas id='previewCanvas' />
-						</div>
-
-						<div id='previewControls'>
-							<Button
-								type='primary'
-								icon={<ExportOutlined />}
-								onClick={() => { }}
-							>
-								Launch preview Window
-							</Button>
-
-							<Button
-								type='primary'
-								icon={<DeleteOutlined />}
-								onClick={() => { }}
-							>
-								Clear frames
-							</Button>
-						</div>
+						<Preview />
 					</Panel>
 
 					<Panel
@@ -159,128 +92,7 @@ export default class Viewport extends React.Component {
 						item='Camera Options'
 						id='camera-options'
 					>
-						<div id='cameraOptionsContainer'>
-							<Row
-								style={{ alignItems: 'center', }}
-							>
-								<Col span={6}>
-									<p>Device</p>
-								</Col>
-								<Col span={18}>
-									<Select
-										id='cameraOptions'
-										defaultValue='webcam'
-										placeholder='Camera Options'
-										style={{ width: '100%' }}
-										options={[
-											{
-												value: 'webcam',
-												label: 'Webcam'
-											},
-											{
-												value: 'usb',
-												label: 'USB Camera'
-											}
-										]}
-										variant='outlined'
-										suffixIcon={<DownOutlined />}
-									/>
-								</Col>
-							</Row>
-
-							<Row
-								style={{ alignItems: 'center', }}
-							>
-								<Col span={6}>
-									<p>Brightness</p>
-								</Col>
-								<Col span={1} />
-								<Col span={16}>
-									<Slider
-										id='brightness'
-										defaultValue={0}
-										min={-100}
-										max={100}
-										step={1}
-										marks={{
-											'-100': '-100',
-											'0': '0',
-											'100': '100'
-										}}
-									/>
-								</Col>
-								<Col span={1} />
-							</Row>
-
-							<Row
-								style={{ alignItems: 'center', }}
-							>
-								<Col span={6}>
-									<p>Contrast</p>
-								</Col>
-								<Col span={1} />
-								<Col span={16}>
-									<Slider
-										id='contrast'
-										defaultValue={0}
-										min={-100}
-										max={100}
-										step={1}
-										marks={{
-											'-100': '-100',
-											'0': '0',
-											'100': '100'
-										}}
-									/>
-								</Col>
-								<Col span={1} />
-							</Row>
-
-							<Row
-								style={{ alignItems: 'center', }}
-							>
-								<Col span={6}>
-									<Popover
-										trigger={['hover']}
-
-										content={
-											<div>
-												<h6><WarningOutlined /> Warning!</h6>
-												<br />
-												<p>Detect Faces is still experimental and may not work as expected.</p>
-											</div>
-										}
-
-										showArrow={false}
-										arrow={false}
-									>
-										<p><WarningOutlined /> Detect Faces</p>
-									</Popover>
-								</Col>
-								<Col span={18}>
-									<Switch
-										id='detectFaces'
-										defaultChecked={false}
-										onChange={(checked) => { }}
-									/>
-								</Col>
-							</Row>
-
-							<Row
-								style={{ alignItems: 'center', }}
-							>
-								<Col span={6}>
-									<p>Live Preview</p>
-								</Col>
-								<Col span={18}>
-									<Switch
-										id='livePreview'
-										defaultChecked={true}
-										onChange={(checked) => { }}
-									/>
-								</Col>
-							</Row>
-						</div>
+						<CameraOptions />
 					</Panel>
 
 					<Panel

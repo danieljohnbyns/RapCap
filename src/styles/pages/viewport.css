@@ -35,11 +35,13 @@
 	max-height: calc(50vh - 16rem);
 }
 
-#cameraContainer {
+#cameraContainer,
+#previewContainer {
 	flex: 1;
 	overflow: auto;
 }
-#cameraCanvas {
+#cameraCanvas,
+#previewCanvas {
 	border-radius: 1rem;
 }
 #cameraControls,
