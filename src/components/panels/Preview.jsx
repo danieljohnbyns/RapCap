@@ -55,7 +55,7 @@ export default class Preview extends React.Component {
 					const frameElement = document.createElement('div');
 					frameElement.className = 'frame';
 					frameElement.style.position = 'absolute';
-					frameElement.style.border = '2px solid red';
+					frameElement.style.border = 'solid 0.5rem var(--color-secondary)';
 					frameElement.style.pointerEvents = 'none';
 
 					frameElements.push(frameElement);
@@ -108,7 +108,7 @@ export default class Preview extends React.Component {
 					drawHeight = drawWidth / snapshotAspectRatio;
 					offsetX = 0;
 					offsetY = (frameHeight - drawHeight) / 2;
-				}
+				};
 
 				// Save context to apply clipping
 				ctx.save();
@@ -130,7 +130,6 @@ export default class Preview extends React.Component {
 				ctx.restore();
 			};
 
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			if (this.imageTemplate)
 				ctx.drawImage(this.imageTemplate, 0, 0, canvas.width, canvas.height);
 			requestAnimationFrame(draw);

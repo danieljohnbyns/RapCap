@@ -36,34 +36,11 @@ const createWindow = () => {
 			label: 'File',
 			submenu: [
 				{
-					label: 'Import',
+					label: 'Import Image Template',
 					accelerator: 'CommandOrControl+I',
-					submenu: [
-						{
-							label: 'Import Image Template',
-							click() {
-								mainWindow.webContents.send('import-image-template');
-							}
-						}
-					]
-				},
-				{
-					label: 'Export',
-					accelerator: 'CommandOrControl+E',
-					submenu: [
-						{
-							label: 'Export to File',
-							click() {
-								app.emit('export-file');
-							}
-						},
-						{
-							label: 'Export to URL',
-							click() {
-								app.emit('export-url');
-							}
-						}
-					]
+					click() {
+						mainWindow.webContents.send('import-image-template');
+					}
 				},
 				{
 					label: 'Quit',
@@ -71,39 +48,6 @@ const createWindow = () => {
 					click() {
 						app.quit();
 					}
-				}
-			]
-		},
-		{
-			label: 'Edit',
-			submenu: [
-				{
-					label: 'Undo',
-					accelerator: 'CommandOrControl+Z',
-					role: 'undo'
-				},
-				{
-					label: 'Redo',
-					accelerator: 'Shift+CommandOrControl+Z',
-					role: 'redo'
-				},
-				{
-					type: 'separator'
-				},
-				{
-					label: 'Cut',
-					accelerator: 'CommandOrControl+X',
-					role: 'cut'
-				},
-				{
-					label: 'Copy',
-					accelerator: 'CommandOrControl+C',
-					role: 'copy'
-				},
-				{
-					label: 'Paste',
-					accelerator: 'CommandOrControl+V',
-					role: 'paste'
 				}
 			]
 		},

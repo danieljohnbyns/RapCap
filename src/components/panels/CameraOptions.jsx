@@ -92,17 +92,19 @@ export default class Preview extends React.Component {
 					<Col span={16}>
 						<Slider
 							id='brightness'
-							defaultValue={0}
-							min={-100}
-							max={100}
+							defaultValue={globals.options.brightness}
+							min={0}
+							max={500}
 							step={5}
 							included={false}
 							marks={{
-								'-100': '-100',
 								'0': '0',
-								'100': '100'
+								'100': '100',
+								'500': '500'
 							}}
-							// onChange={(value) => globals.setBrightness(value)}
+							onChange={(value) => {
+								globals.options.brightness = value;
+							}}
 						/>
 					</Col>
 					<Col span={1} />
@@ -118,17 +120,19 @@ export default class Preview extends React.Component {
 					<Col span={16}>
 						<Slider
 							id='contrast'
-							defaultValue={0}
-							min={-100}
-							max={100}
+							defaultValue={globals.options.contrast}
+							min={0}
+							max={500}
 							step={5}
 							included={false}
 							marks={{
-								'-100': '-100',
 								'0': '0',
-								'100': '100'
+								'100': '100',
+								'500': '500'
 							}}
-							// onChange={(value) => globals.setContrast(value)}
+							onChange={(value) => {
+								globals.options.contrast = value;
+							}}
 						/>
 					</Col>
 					<Col span={1} />
@@ -157,7 +161,7 @@ export default class Preview extends React.Component {
 						<Switch
 							id='detectFaces'
 							defaultChecked={false}
-							onChange={(checked) => globals.setDetectFaces(checked)}
+							onChange={(checked) => { }}
 						/>
 					</Col>
 				</Row>
@@ -172,7 +176,7 @@ export default class Preview extends React.Component {
 						<Switch
 							id='livePreview'
 							defaultChecked={true}
-							onChange={(checked) => globals.setLivePreview(checked)}
+							onChange={(checked) => { }}
 						/>
 					</Col>
 				</Row>

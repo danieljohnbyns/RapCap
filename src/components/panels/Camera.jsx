@@ -9,9 +9,7 @@ import {
 	Select
 } from 'antd';
 
-import globals, {
-	
-} from '../../utils/globals.js';
+import globals from '../../utils/globals.js';
 
 export default class Camera extends React.Component {
 	constructor(props) {
@@ -106,6 +104,7 @@ export default class Camera extends React.Component {
 				canvas.width = canvasWidth;
 				canvas.height = canvasHeight;
 
+				ctx.filter = `brightness(${globals.options.brightness / 100}) contrast(${globals.options.contrast / 100})`;
 				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 			};
 			setTimeout(() => requestAnimationFrame(draw), 1000 / 20); // 20 fps
@@ -211,7 +210,7 @@ export default class Camera extends React.Component {
 					</Button>
 					<Select
 						id='countdown'
-						defaultValue={0}
+						defaultValue={globals.options.countdown}
 						placeholder='Countdown'
 						options={[
 							{
