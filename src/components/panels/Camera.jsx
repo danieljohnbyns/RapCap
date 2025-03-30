@@ -149,22 +149,8 @@ export default class Camera extends React.Component {
 			if (canvas) {
 				// Convert the current canvas frame to a data URL
 				const dataUrl = canvas.toDataURL('image/png');
-
-				// Save the data URL into the globals buffer
-				globals.buffer = dataUrl;
-
-				console.log('Frame captured and saved to globals.buffer');
-
+				globals.snapshot(dataUrl);
 				this.triggerShutterEffect();
-
-				// Download the image
-				const link = document.createElement('a');
-				link.href = globals.buffer;
-				link.download = 'captured_image.png';
-				document.body.appendChild(link);
-				link.click();
-				document.body.removeChild(link);
-				console.log('Image downloaded');
 			};
 		};
 
@@ -183,7 +169,6 @@ export default class Camera extends React.Component {
 
 		globals.changeCamera = this.changeCamera;
 		globals.getMediaDevices = this.getMediaDevices;
-		globals.shoot = this.shoot;
 	};
 
 	render() {

@@ -11,14 +11,9 @@ const globals = {
 	getMediaDevices: null,
 
 	/**
-	 * @type {(countdown: Number) => Void}
+	 * @type {(buffer: String) => Void}
 	 */
-	shoot: null,
-
-	/**
-	 * @type {String}
-	 */
-	buffer: '',
+	snapshot: null,
 
 	options: {
 		countdown: 0,

@@ -18,6 +18,10 @@ export default class Preview extends React.Component {
 		this.parentRef = React.createRef();
 
 		this.imageTemplate = null;
+
+		this.state = {
+			snapshots: []
+		};
 	};
 
 	drawCanvas = () => {
@@ -66,20 +70,69 @@ export default class Preview extends React.Component {
 			const imageAspectRatio = this.imageTemplate.width / this.imageTemplate.height;
 			let canvasWidth = parentWidth;
 			let canvasHeight = parentWidth / imageAspectRatio;
-
 			if (canvasHeight > parentHeight) {
 				canvasHeight = parentHeight;
 				canvasWidth = parentHeight * imageAspectRatio;
 			};
-
 			canvas.width = canvasWidth;
 			canvas.height = canvasHeight;
 
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			// Draw Snapshots
+			for (let i = 0; i < this.state.snapshots.length; i++) {
+				const snapshot = this.state.snapshots[i];
+				const frame = frames[i];
 
+				const ratioX = canvas.offsetWidth / this.imageTemplate.width;
+				const ratioY = canvas.offsetHeight / this.imageTemplate.height;
+				const ratio = Math.min(ratioX, ratioY);
+
+				const frameWidth = frame.size.width * ratio;
+				const frameHeight = frame.size.height * ratio;
+				const frameLeft = frame.position.x * ratio;
+				const frameTop = frame.position.y * ratio;
+
+				const snapshotAspectRatio = snapshot.width / snapshot.height;
+				const frameAspectRatio = frameWidth / frameHeight;
+
+				let drawWidth, drawHeight, offsetX, offsetY;
+
+				if (snapshotAspectRatio > frameAspectRatio) {
+					// Snapshot is wider: Match height to frame, scale width proportionally
+					drawHeight = frameHeight;
+					drawWidth = drawHeight * snapshotAspectRatio;
+					offsetX = (frameWidth - drawWidth) / 2;
+					offsetY = 0;
+				} else {
+					// Snapshot is taller: Match width to frame, scale height proportionally
+					drawWidth = frameWidth;
+					drawHeight = drawWidth / snapshotAspectRatio;
+					offsetX = 0;
+					offsetY = (frameHeight - drawHeight) / 2;
+				}
+
+				// Save context to apply clipping
+				ctx.save();
+				// Define clipping path to frame's boundaries
+				ctx.beginPath();
+				ctx.rect(frameLeft, frameTop, frameWidth, frameHeight);
+				ctx.clip();
+
+				// Draw the image (will be clipped to the frame)
+				ctx.drawImage(
+					snapshot,
+					frameLeft + offsetX,
+					frameTop + offsetY,
+					drawWidth,
+					drawHeight
+				);
+
+				// Restore context to remove clipping
+				ctx.restore();
+			};
+
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			if (this.imageTemplate)
 				ctx.drawImage(this.imageTemplate, 0, 0, canvas.width, canvas.height);
-
 			requestAnimationFrame(draw);
 
 			// Get the ratio of canvas' original size to the current size
@@ -129,6 +182,18 @@ export default class Preview extends React.Component {
 		this.importImageTemplate(event.detail);
 	};
 
+	snapshot = (buffer) => {
+		const image = new Image();
+		image.src = buffer;
+		image.onload = () => {
+			const snapshots = this.state.snapshots;
+			if (snapshots.length === globals.options.frames.length)
+				snapshots.shift();
+			snapshots.push(image);
+			this.setState({ snapshots });
+		};
+	};
+
 	componentDidMount() {
 		const image = new Image();
 		image.src = globals.options.imageTemplate || '';
@@ -137,6 +202,7 @@ export default class Preview extends React.Component {
 			this.drawCanvas();
 		};
 
+		globals.snapshot = this.snapshot;
 		window.addEventListener('import-image-template', this.handleImportImageTemplate);
 	};
 

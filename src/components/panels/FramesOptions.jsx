@@ -3,7 +3,6 @@ import React from 'react';
 import {
 	InputNumber,
 	Divider,
-	Space,
 	Row, Col,
 } from 'antd';
 
@@ -17,12 +16,14 @@ export default class Frames extends React.Component {
 			frames: globals.options.frames
 		};
 	};
+
 	componentDidMount() {
 		this.setState({
 			frameCount: globals.options.frames.length,
 			frames: globals.options.frames
 		});
 	};
+
 	render() {
 		return (
 			<div id='framesOptionsContainer'>
@@ -115,7 +116,7 @@ export default class Frames extends React.Component {
 													frames: globals.options.frames
 												});
 											}}
-											min={0} max={1000} step={1}
+											min={0} max={10000} step={1}
 											placeholder='Width'
 										/>
 									</Col>
@@ -134,7 +135,7 @@ export default class Frames extends React.Component {
 													frames: globals.options.frames
 												});
 											}}
-											min={0} max={1000} step={1}
+											min={0} max={10000} step={1}
 											placeholder='Height'
 										/>
 									</Col>
@@ -156,7 +157,7 @@ export default class Frames extends React.Component {
 													frames: globals.options.frames
 												});
 											}}
-											min={0} max={1000} step={1}
+											min={0} max={10000} step={1}
 											placeholder='X'
 										/>
 									</Col>
@@ -175,7 +176,7 @@ export default class Frames extends React.Component {
 													frames: globals.options.frames
 												});
 											}}
-											min={0} max={1000} step={1}
+											min={0} max={10000} step={1}
 											placeholder='Y'
 										/>
 									</Col>
