@@ -1,3 +1,5 @@
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const globals = {
 	/**
@@ -16,9 +18,14 @@ const globals = {
 	snapshot: null,
 
 	/**
-	 * @type {(filename: String, format: String, scale: Number) => Void}
+	 * @type {(filename: String, format: String, scale: Number) => Promise<Blob>}
 	 */
 	downloadImage: null,
+
+	/**
+	 * @type {withReactContent}
+	 */
+	swal: withReactContent(Swal),
 
 	options: {
 		countdown: 3,
@@ -55,10 +62,7 @@ const globals = {
 		],
 
 		output: {
-			name: (() => {
-				const date = new Date();
-				return `photo_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
-			})(),
+			name: 'output',
 			scale: 1,
 			/**
 			 * @type {'png' | 'jpeg' | 'webp'}

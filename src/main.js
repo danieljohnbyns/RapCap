@@ -138,6 +138,14 @@ ipcMain.handle('save-file', async (_, { fileName, data }) => {
 		const filePath = path.join(downloadsPath, fileName);
 		log.debug('Full path:', filePath);
 
+		// Check if the file already exists
+		try {
+			await fs.access(filePath);
+			return { success: false, error: 'File already exists' };
+		} catch {
+			// File does not exist, proceed with saving
+		}
+
 		// Convert base64 to Buffer if needed
 		const fileData = data.startsWith('data:')
 			? Buffer.from(data.split(',')[1], 'base64')

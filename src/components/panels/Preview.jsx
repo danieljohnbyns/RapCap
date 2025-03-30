@@ -191,59 +191,71 @@ export default class Preview extends React.Component {
 		};
 	};
 
-	downloadImage = async (filename, format = 'png', scale = 1) => {
-		console.log('Download image:', filename, format, scale);
-		if (!this.imageTemplate) return;
+	downloadImage = (filename, format = 'png', scale = 1) => {
+		return new Promise((resolve, reject) => {
+			console.log('Download image:', filename, format, scale);
+			if (!this.imageTemplate) {
+				reject(new Error('No image template available'));
+				return;
+			}
 
-		try {
-			const canvas = this.canvasRef.current;
-			const ctx = canvas.getContext('2d');
+			try {
+				const canvas = this.canvasRef.current;
 
-			// Validate and normalize parameters
-			const validFormats = ['png', 'jpeg', 'webp'];
-			const sanitizedFormat = validFormats.includes(format.toLowerCase())
-				? format.toLowerCase()
-				: 'png';
+				// Validate and normalize parameters
+				const validFormats = ['png', 'jpeg', 'webp'];
+				const sanitizedFormat = validFormats.includes(format.toLowerCase())
+					? format.toLowerCase()
+					: 'png';
 
-			const sanitizedScale = Math.min(Math.max(Number(scale) || 1, 0.1, 4));
-			const sanitizedFilename = (filename || 'snapshot')
-				.replace(/[^a-z0-9\-_]/gi, '_')
-				.substring(0, 50);
+				const sanitizedScale = Math.min(Math.max(Number(scale) || 1, 0.1, 4));
+				const sanitizedFilename = (filename || 'snapshot')
+					.replace(/[^a-z0-9\-_]/gi, '_')
+					.substring(0, 50);
 
-			// Create scaled canvas
-			const scaledCanvas = document.createElement('canvas');
-			const scaledCtx = scaledCanvas.getContext('2d');
+				// Create scaled canvas
+				const scaledCanvas = document.createElement('canvas');
+				const scaledCtx = scaledCanvas.getContext('2d');
 
-			scaledCanvas.width = canvas.width * sanitizedScale;
-			scaledCanvas.height = canvas.height * sanitizedScale;
+				scaledCanvas.width = canvas.width * sanitizedScale;
+				scaledCanvas.height = canvas.height * sanitizedScale;
 
-			// Preserve image quality
-			scaledCtx.imageSmoothingEnabled = true;
-			scaledCtx.imageSmoothingQuality = 'high';
-			scaledCtx.drawImage(
-				canvas,
-				0, 0, canvas.width, canvas.height,
-				0, 0, scaledCanvas.width, scaledCanvas.height
-			);
+				// Preserve image quality
+				scaledCtx.imageSmoothingEnabled = true;
+				scaledCtx.imageSmoothingQuality = 'high';
+				scaledCtx.drawImage(
+					canvas,
+					0, 0, canvas.width, canvas.height,
+					0, 0, scaledCanvas.width, scaledCanvas.height
+				);
 
-			// Generate data URL with quality settings for JPEG
-			const quality = sanitizedFormat === 'jpeg' ? 0.92 : 1;
-			const dataUrl = scaledCanvas.toDataURL(`image/${sanitizedFormat}`, quality);
+				// Generate data URL with quality settings for JPEG
+				const quality = sanitizedFormat === 'jpeg' ? 0.92 : 1;
+				const dataUrl = scaledCanvas.toDataURL(`image/${sanitizedFormat}`, quality);
 
-			// Generate filename with correct extension
-			const fileName = `${sanitizedFilename}.${sanitizedFormat}`;
+				// Generate filename with correct extension
+				const fileName = `${sanitizedFilename}.${sanitizedFormat}`;
 
-			// Save file
-			const result = await window.api.saveFile(fileName, dataUrl);
-
-			if (result.success) {
-				console.log('File saved to:', result.path);
-			} else {
-				console.error('Save failed:', result.error);
+				// Save file
+				window.api.saveFile(fileName, dataUrl)
+					.then((result) => {
+						if (result.success) {
+							console.log('File saved to:', result.path);
+							resolve(result.path);
+						} else {
+							console.error('Save failed:', result.error);
+							reject(new Error(result.error));
+						};
+					})
+					.catch((error) => {
+						console.error('Save error:', error);
+						reject(error);
+					});
+			} catch (error) {
+				console.error('Save error:', error);
+				reject(error);
 			};
-		} catch (error) {
-			console.error('Save error:', error);
-		};
+		});
 	};
 
 	componentDidMount() {

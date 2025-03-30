@@ -61,9 +61,7 @@ export default class OutputOptions extends React.Component {
 						<Select
 							style={{ width: '100%' }}
 							defaultValue={globals.options.output.format}
-							onChange={(value) => {
-								globals.options.output.format = value;
-							}}
+							value={globals.options.output.format}
 
 							options={[
 								{
@@ -90,13 +88,59 @@ export default class OutputOptions extends React.Component {
 					onClick={() => {
 						if (globals.options.output.name === '') {
 							globals.options.output.name = 'output';
+							globals.swal.mixin({
+								toast: true,
+								position: 'top-end',
+								showConfirmButton: false,
+								timer: 5000,
+								timerProgressBar: true,
+								didOpen: (toast) => {
+									toast.addEventListener('mouseenter', globals.swal.stopTimer);
+									toast.addEventListener('mouseleave', globals.swal.resumeTimer);
+								}
+							}).fire({
+								icon: 'warning',
+								title: <p>File name cannot be empty</p>
+							});
 						};
 
 						globals.downloadImage(
 							globals.options.output.name,
 							globals.options.output.format,
 							globals.options.output.scale
-						);
+						).then((result) => {
+							globals.swal.mixin({
+								toast: true,
+								position: 'top-end',
+								showConfirmButton: false,
+								timer: 5000,
+								timerProgressBar: true,
+								didOpen: (toast) => {
+									toast.addEventListener('mouseenter', globals.swal.stopTimer);
+									toast.addEventListener('mouseleave', globals.swal.resumeTimer);
+								}
+							}).fire({
+								icon: 'success',
+								title: <p>Image exported successfully</p>
+							});
+						})
+							.catch((error) => {
+								globals.swal.mixin({
+									toast: true,
+									position: 'top-end',
+									showConfirmButton: false,
+									timer: 5000,
+									timerProgressBar: true,
+									didOpen: (toast) => {
+										toast.addEventListener('mouseenter', globals.swal.stopTimer);
+										toast.addEventListener('mouseleave', globals.swal.resumeTimer);
+									}
+								}).fire({
+									icon: 'error',
+									title: <p>Image export failed</p>,
+									html: <p>{`${error}`}</p>
+								});
+							});
 					}}
 				>
 					Export
