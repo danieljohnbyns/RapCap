@@ -1,6 +1,15 @@
 import React from 'react';
 import { createSwapy } from 'swapy';
 
+import {
+	CameraOutlined,
+	DownOutlined
+} from '@ant-design/icons';
+import {
+	Button,
+	Select,
+} from 'antd';
+
 import '../styles/pages/viewport.css';
 
 import Panel from '../components/Panel.jsx';
@@ -72,7 +81,40 @@ export default class Viewport extends React.Component {
 						item='Camera'
 						id='camera'
 					>
-						<Camera />
+						<div id='cameraContainer'>
+							<Camera />
+						</div>
+
+						<div id='cameraControls'>
+							<Button
+								type='primary'
+								icon={<CameraOutlined />}
+								onClick={() => { }}
+							>
+								Shoot
+							</Button>
+							<Select
+								id='cameraSelect'
+								defaultValue='Camera 1'
+								placeholder='Select Camera'
+								options={[
+									{
+										value: 'Camera 1',
+										label: 'Camera 1'
+									},
+									{
+										value: 'Camera 2',
+										label: 'Camera 2'
+									},
+									{
+										value: 'Camera 3',
+										label: 'Camera 3'
+									}
+								]}
+								variant='filled'
+								suffixIcon={<DownOutlined />}
+							/>
+						</div>
 					</Panel>
 
 
