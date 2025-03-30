@@ -44,8 +44,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 					colorTextPlaceholder: rootToHex('--color-light'),
 					colorTextDescription: rootToHex('--color-light'),
 					colorTextSecondary: rootToHex('--color-light'),
+
+					colorIcon: rootToHex('--color-light'),
+					colorIconHover: rootToHex('--color-light'),
 				},
-				algorithm: theme.darkAlgorithm,
+				algorithm: theme.darkAlgorithm
 			}}
 		>
 			<Viewport />

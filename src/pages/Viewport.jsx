@@ -94,21 +94,21 @@ export default class Viewport extends React.Component {
 								Shoot
 							</Button>
 							<Select
-								id='cameraSelect'
-								defaultValue='Camera 1'
-								placeholder='Select Camera'
+								id='shutterSpeed'
+								defaultValue='0'
+								placeholder='Shutter Speed'
 								options={[
 									{
-										value: 'Camera 1',
-										label: 'Camera 1'
+										value: '0',
+										label: 'Instant'
 									},
 									{
-										value: 'Camera 2',
-										label: 'Camera 2'
+										value: '3',
+										label: '3 Seconds'
 									},
 									{
-										value: 'Camera 3',
-										label: 'Camera 3'
+										value: '5',
+										label: '5 Seconds'
 									}
 								]}
 								variant='filled'
