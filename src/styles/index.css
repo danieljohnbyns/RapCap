@@ -121,3 +121,7 @@ html {
 	background-color: var(--color-primary-complement);
 	border-radius: 0.5rem;
 }
+
+.swal2-popup {
+    font-size: 2rem !important;
+}

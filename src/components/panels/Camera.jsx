@@ -16,185 +16,209 @@ export default class Camera extends React.Component {
 		super(props);
 		this.videoRef = React.createRef();
 		this.canvasRef = React.createRef();
-		this.parentRef = React.createRef();
-		this.shutterOverlayRef = React.createRef();
-		this.countdownRef = React.createRef();
+		this.context = null;
+
 		this.state = {
-			devices: [],
-			selectedDeviceId: null,
 			countdown: globals.options.countdown,
-			currentCountdown: 0
+			currentCountdown: 0,
+			mediaDevices: globals.options.mediaDevices,
+			mediaDevice: globals.options.mediaDevice
 		};
 	};
 
-	getMediaDevices = async () => {
-		try {
-			const devices = await navigator.mediaDevices.enumerateDevices();
-			const videoDevices = devices.filter(device => device.kind === 'videoinput');
+	resolveDevices = async () => {
+		await new Promise((resolve, reject) => {
+			navigator.mediaDevices.enumerateDevices()
+				.then((devices) => {
+					const mediaDevices = devices.filter((device) => device.kind === 'videoinput');
+					const mediaDevice = mediaDevices[0];
+					if (!mediaDevices || mediaDevices.length === 0) {
+						alert('No camera found');
+						reject('No camera found');
+						return;
+					};
 
-			this.setState({
-				devices: videoDevices,
-				selectedDeviceId: videoDevices.length > 0 ? videoDevices[0].deviceId : null,
-			});
-
-			if (videoDevices.length > 0) {
-				this.startCamera(videoDevices[0].deviceId);
-			};
-
-			return videoDevices;
-		} catch (err) {
-			console.error('Error getting media devices:', err);
-		};
-	};
-
-	startCamera = (deviceId = null) => {
-		const constraints = {
-			video: deviceId ? { deviceId: { exact: deviceId } } : true,
-		};
-
-		navigator.mediaDevices
-			.getUserMedia(constraints)
-			.then((stream) => {
-				// Set the video source to the webcam stream
-				this.videoRef.current.srcObject = stream;
-				this.videoRef.current.onloadedmetadata = () => {
-					this.videoRef.current.play();
-					this.updateCanvas();
-				};
-			})
-			.catch((err) => {
-				console.error('Error accessing webcam:', err);
-			});
-	};
-
-	changeCamera = (deviceId) => {
-		// Stop the current video stream
-		const stream = this.videoRef.current.srcObject;
-		if (stream) {
-			stream.getTracks().forEach(track => track.stop());
-		};
-
-		// Start the camera with the new device
-		this.startCamera(deviceId);
-		this.setState({ selectedDeviceId: deviceId });
-	};
-
-	updateCanvas = () => {
-		const canvas = this.canvasRef.current;
-		const ctx = canvas.getContext('2d');
-		const video = this.videoRef.current;
-		const parent = this.parentRef.current;
-
-		// Draw the video feed onto the canvas
-		const draw = () => {
-			if (video.readyState === video.HAVE_ENOUGH_DATA) {
-				const parentWidth = parent.offsetWidth;
-				const parentHeight = parent.offsetHeight;
-
-				// Maintain aspect ratio
-				const videoAspectRatio = video.videoWidth / video.videoHeight;
-				let canvasWidth = parentWidth;
-				let canvasHeight = parentWidth / videoAspectRatio;
-
-				if (canvasHeight > parentHeight) {
-					canvasHeight = parentHeight;
-					canvasWidth = parentHeight * videoAspectRatio;
-				};
-
-				canvas.width = canvasWidth;
-				canvas.height = canvasHeight;
-
-				ctx.filter = `brightness(${globals.options.brightness / 100}) contrast(${globals.options.contrast / 100})`;
-				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-			};
-			setTimeout(() => requestAnimationFrame(draw), 1000 / 20); // 20 fps
-		};
-		draw();
-	};
-
-	startCountdown = (seconds) => {
-		return new Promise((resolve) => {
-			this.setState({ currentCountdown: seconds }, () => {
-				const countdownInterval = setInterval(() => {
-					this.setState(prevState => {
-						if (prevState.currentCountdown <= 1) {
-							clearInterval(countdownInterval);
-							resolve();
-							return { currentCountdown: 0 };
-						};
-						return { currentCountdown: prevState.currentCountdown - 1 };
+					globals.setOptions({
+						mediaDevices: mediaDevices,
+						mediaDevice: null
 					});
-				}, 1000);
-			});
+					this.setState({
+						mediaDevices: mediaDevices,
+						mediaDevice: null
+					});
+					resolve(mediaDevice);
+				})
+				.catch((error) => {
+					alert('Error getting media devices: ' + error);
+					reject(error);
+				});
 		});
 	};
 
+	startDevice = async (device = null) => {
+		if (!device && this.state.mediaDevices.length === 0)
+			return;
+		if (!device)
+			device = this.state.mediaDevices[0];
+		globals.setOptions({
+			mediaDevice: device
+		}, true);
+		this.videoRef.current.srcObject = null;
+		this.videoRef.current.srcObject = await navigator.mediaDevices.getUserMedia({
+			video: {
+				deviceId: device.deviceId
+			}
+		});
+		this.videoRef.current.addEventListener('loadedmetadata', () => {
+			this.videoRef.current.play();
+			this.canvasRef.current.width = this.videoRef.current.videoWidth;
+			this.canvasRef.current.height = this.videoRef.current.videoHeight;
+			this.draw();
+		});
+	};
 
-	triggerShutterEffect = () => {
-		const overlay = this.shutterOverlayRef.current;
-		if (overlay) {
-			overlay.classList.add('flash');
-			const onAnimationEnd = () => {
-				overlay.classList.remove('flash');
-				overlay.removeEventListener('animationend', onAnimationEnd);
-			};
-			overlay.addEventListener('animationend', onAnimationEnd);
-		};
-	};	
-
-	shoot = (countdown = 0) => {
-		const captureFrame = async () => {
-			const canvas = this.canvasRef.current;
-			if (canvas) {
-				// Convert the current canvas frame to a data URL
-				const dataUrl = canvas.toDataURL('image/png');
-				globals.snapshot(dataUrl);
-				this.triggerShutterEffect();
-			};
-		};
-
-		if (countdown > 0) {
-			this.startCountdown(countdown).then(() => {
-				captureFrame();
+	stopDevice = () => {
+		if (this.videoRef.current.srcObject) {
+			const tracks = this.videoRef.current.srcObject.getTracks();
+			tracks.forEach((track) => {
+				track.stop();
 			});
-		} else {
-			captureFrame();
+			this.videoRef.current.srcObject = null;
 		};
 	};
 
-	componentDidMount() {
-		this.getMediaDevices();
-		this.startCamera();
+	draw = () => {
+		if (this.videoRef.current.paused || this.videoRef.current.ended)
+			return;
+		if (!this.context || !this.context.drawImage)
+			this.context = this.canvasRef.current.getContext('2d');
+		this.context.drawImage(this.videoRef.current, 0, 0, this.canvasRef.current.width, this.canvasRef.current.height);
+		requestAnimationFrame(this.draw);
 
-		globals.changeCamera = this.changeCamera;
-		globals.getMediaDevices = this.getMediaDevices;
+		const parent = this.canvasRef.current.parentElement;
+		const parentWidth = parent.clientWidth;
+		const parentHeight = parent.clientHeight;
+
+		const canvasWidth = this.canvasRef.current.width;
+		const canvasHeight = this.canvasRef.current.height;
+
+		const scaleX = parentWidth / canvasWidth;
+		const scaleY = parentHeight / canvasHeight;
+		const scale = Math.min(scaleX, scaleY);
+
+		const overlay = document.getElementById('cameraOverlay');
+		const style = {
+			transform: `scale(${scale})`,
+			transformOrigin: 'top left',
+			width: `${this.canvasRef.current.offsetWidth}px`,
+			height: `${this.canvasRef.current.offsetHeight}px`,
+			position: 'absolute',
+			left: `${(parentWidth - canvasWidth * scale) / 2}px`,
+			top: `${(parentHeight - canvasHeight * scale) / 2}px`,
+			pointerEvents: 'none',
+			borderRadius: `${1 / scale}rem`
+		};
+		for (const [key, value] of Object.entries(style)) {
+			this.canvasRef.current.style[key] = value;
+			overlay.style[key] = value;
+		};
+
+		this.canvasRef.current.style.zIndex = '1';
+		overlay.style.zIndex = '2';
+
+		const border = document.getElementById('border');
+		const currentFrame = globals.options.frames.find((frame) => !frame.buffer);
+		if (currentFrame) {
+			const ratio = Math.min(canvasWidth / currentFrame.size.width, canvasHeight / currentFrame.size.height);
+			const borderWidth = currentFrame.size.width * ratio;
+			const borderHeight = currentFrame.size.height * ratio;
+			const borderStyle = {
+				width: `${borderWidth}px`,
+				height: `${borderHeight}px`,
+				top: `${(canvasHeight - borderHeight) / 2}px`,
+				left: `${(canvasWidth - borderWidth) / 2}px`,
+				backgroundColor: 'transparent',
+				border: `solid ${0.25 / scale}rem var(--color-light)`,
+				boxShadow: `0 0 ${0.25 / scale}rem var(--color-dark)`,
+				position: 'absolute',
+				pointerEvents: 'none'
+			};
+			for (const [key, value] of Object.entries(borderStyle)) {
+				border.style[key] = value;
+			};
+			border.style.zIndex = '3';
+			border.style.boxSizing = 'border-box';
+			border.style.pointerEvents = 'none';
+			const counter = document.getElementById('counter');
+			counter.style.fontSize = `${20 / scale}rem`;
+			counter.style.color = 'var(--color-light)';
+		};
+	};
+
+	async componentDidMount() {
+		await this.resolveDevices();
+		await this.startDevice();
+
+		window.addEventListener('optionsUpdated', (event) => {
+			if (this.state.mediaDevice !== globals.options.mediaDevice) {
+				this.stopDevice();
+				this.startDevice(globals.options.mediaDevice);
+
+				return;
+			};
+			this.setState({
+				countdown: globals.options.countdown,
+				currentCountdown: 0
+			});
+		});
+
+		// Listen for media devices changes
+		navigator.mediaDevices.ondevicechange = async () => {
+			await this.resolveDevices();
+			if (this.state.mediaDevice !== globals.options.mediaDevice) {
+				this.stopDevice();
+				this.startDevice(globals.options.mediaDevice);
+			};
+		};
+	};
+
+	shoot = () => {
+		// Save the current frame to buffer and emit an event
+		const canvas = this.canvasRef.current;
+		const currentFrame = globals.options.frames.find((frame) => !frame.buffer);
+		if (!currentFrame) return;
+
+		const base64 = canvas.toDataURL('image/png');
+		currentFrame.buffer = base64;
+
+		currentFrame.resolution = {
+			width: canvas.width,
+			height: canvas.height
+		};
+
+		globals.setOptions({
+			frames: globals.options.frames
+		});
 	};
 
 	render() {
 		return (
 			<>
 				<div id='cameraContainer'>
-					<div ref={this.parentRef} style={{ width: '100%', height: '100%' }}>
-						<video
-							ref={this.videoRef}
-							style={{ display: 'none' }} // Hide the video element
-						></video>
-						<canvas
-							ref={this.canvasRef}
-							id='cameraCanvas'
-							style={{ display: 'block', margin: '0 auto' }}
-						></canvas>
+					<video
+						ref={this.videoRef}
+						style={{ display: 'none' }}
+					></video>
+					<canvas
+						id='cameraCanvas'
+						ref={this.canvasRef}
+					></canvas>
 
-						<div
-							className='shutter-overlay'
-							ref={this.shutterOverlayRef}
-						/>
-
-						{this.state.currentCountdown > 0 && (
-							<div className='countdown-display'>
-								{this.state.currentCountdown}
-							</div>
-						)}
+					<div id='cameraOverlay'>
+						<div id='border' />
+						<div id='counter'>
+							{this.state.currentCountdown > 0 ? this.state.currentCountdown : ''}
+						</div>
 					</div>
 				</div>
 
@@ -202,10 +226,22 @@ export default class Camera extends React.Component {
 					<Button
 						type='primary'
 						icon={<CameraOutlined />}
-						onClick={() => {
-							this.shoot(this.state.countdown);
-						}}
 						disabled={this.state.currentCountdown > 0}
+						onClick={async () => {
+							this.setState({
+								currentCountdown: globals.options.countdown
+							});
+							for (let i = globals.options.countdown; i > 0; i--) {
+								this.setState({
+									currentCountdown: i
+								});
+								await new Promise((resolve) => setTimeout(resolve, 1000));
+							};
+							this.shoot();
+							this.setState({
+								currentCountdown: 0
+							});
+						}}
 					>
 						Shoot
 					</Button>
@@ -232,8 +268,9 @@ export default class Camera extends React.Component {
 						suffixIcon={<DownOutlined />}
 
 						onChange={(value) => {
-							this.setState({ countdown: value });
-							globals.options.countdown = value;
+							globals.setOptions({
+								countdown: value
+							});
 						}}
 					/>
 				</div>

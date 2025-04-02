@@ -139,24 +139,26 @@ ipcMain.handle('save-file', async (_, { fileName, data }) => {
 		const filePath = path.join(downloadsPath, fileName);
 		log.debug('Full path:', filePath);
 
-		// Check if the file already exists
-		try {
-			await fs.access(filePath);
-			return { success: false, error: 'File already exists' };
-		} catch {
-			// File does not exist, proceed with saving
-		}
-
 		// Convert base64 to Buffer if needed
-		const fileData = data.startsWith('data:')
+		const fileData = typeof data === 'string' && data.startsWith('data:')
 			? Buffer.from(data.split(',')[1], 'base64')
-			: data;
+			: Buffer.from(data);
 
 		await fs.writeFile(filePath, fileData);
 		return { success: true, path: filePath };
 	} catch (error) {
 		console.error('Save failed:', error);
 		return { success: false, error: error.message };
+	};
+});
+ipcMain.handle('load-image', async (_, url) => {
+	try {
+		const response = await fetch(url);
+		const blob = await response.blob();
+		return URL.createObjectURL(blob);
+	} catch (error) {
+		console.error('Image load error:', error);
+		throw error;
 	};
 });
 

@@ -18,40 +18,25 @@ import globals from '../../utils/globals.js';
 export default class cameraOptions extends React.Component {
 	constructor(props) {
 		super(props);
+
 		this.state = {
-			devices: [],
-			selectedDeviceId: null
+			mediaDevice: globals.options.mediaDevice,
+			mediaDevices: globals.options.mediaDevices,
 		};
 	};
 
 	async componentDidMount() {
-		const mediaDevices = await globals.getMediaDevices();
-		const videoDevices = mediaDevices.filter(device => device.kind === 'videoinput');
 		this.setState({
-			devices: videoDevices,
-			selectedDeviceId: videoDevices.length > 0 ? videoDevices[0].deviceId : null
+			mediaDevice: globals.options.mediaDevice,
+			mediaDevices: globals.options.mediaDevices
 		});
-		await globals.changeCamera(videoDevices[0]?.deviceId);
 
-		// Listen for media device changes
-		navigator.mediaDevices.ondevicechange = this.handleDeviceChange;
-	};
-
-	componentWillUnmount() {
-		// Clean up the event listener
-		navigator.mediaDevices.ondevicechange = null;
-	};
-
-	handleDeviceChange = async () => {
-		const mediaDevices = await globals.getMediaDevices();
-		const videoDevices = mediaDevices.filter(device => device.kind === 'videoinput');
-		this.setState({
-			devices: videoDevices,
-			selectedDeviceId: videoDevices.length > 0 ? videoDevices[0].deviceId : null
+		window.addEventListener('optionsUpdated', (event) => {
+			this.setState({
+				mediaDevice: globals.options.mediaDevice,
+				mediaDevices: globals.options.mediaDevices
+			});
 		});
-		if (videoDevices.length > 0) {
-			await globals.changeCamera(videoDevices[0].deviceId);
-		};
 	};
 
 	render() {
@@ -66,23 +51,32 @@ export default class cameraOptions extends React.Component {
 					<Col span={18}>
 						<Select
 							id='cameraOptions'
-							value={this.state.selectedDeviceId}
+							defaultValue={globals.options.mediaDevice}
+							value={this.state.mediaDevice}
 							placeholder='Camera Options'
 							style={{ width: '100%' }}
-							options={this.state.devices.map(device => ({
-								value: device.deviceId,
-								label: device.label || 'Unknown Device'
-							}))}
+							options={this.state.mediaDevices?.map((device) => {
+								return {
+									value: device.deviceId,
+									label: device.label,
+									key: device.deviceId
+								};
+							})}
 							onChange={(value) => {
-								this.setState({ selectedDeviceId: value });
-								globals.changeCamera(value);
+								globals.options.mediaDevice = this.state.mediaDevices.find((device) => device.deviceId === value);
+								this.setState({
+									mediaDevice: globals.options.mediaDevice
+								});
+								globals.setOptions({
+									mediaDevice: this.state.mediaDevices.find((device) => device.deviceId === value)
+								});
 							}}
 							suffixIcon={<DownOutlined />}
 						/>
 					</Col>
 				</Row>
 
-				<Row
+				{/* <Row
 					style={{ alignItems: 'center', }}
 				>
 					<Col span={6}>
@@ -181,7 +175,7 @@ export default class cameraOptions extends React.Component {
 							onChange={(checked) => { }}
 						/>
 					</Col>
-				</Row>
+				</Row> */}
 			</div>
 		);
 	};

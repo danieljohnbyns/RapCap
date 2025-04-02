@@ -3,8 +3,15 @@ import React from 'react';
 import {
 	InputNumber,
 	Divider,
-	Row, Col,
+	Button,
+	Row, Col
 } from 'antd';
+
+import {
+	RedoOutlined,
+	ArrowUpOutlined,
+	ArrowDownOutlined
+} from '@ant-design/icons';
 
 import globals from '../../utils/globals.js';
 
@@ -22,6 +29,13 @@ export default class FramesOptions extends React.Component {
 			frameCount: globals.options.frames.length,
 			frames: globals.options.frames
 		});
+
+		window.addEventListener('optionsUpdated', (event) => {
+			this.setState({
+				frameCount: globals.options.frames.length,
+				frames: globals.options.frames
+			});
+		});
 	};
 
 	render() {
@@ -38,48 +52,34 @@ export default class FramesOptions extends React.Component {
 							style={{ width: '100%' }}
 							defaultValue={globals.options.frames.length}
 							onChange={(value) => {
-								// Check if increasing or decreasing the number of frames
-								if (value > this.state.frameCount) {
-									const increse = value - this.state.frameCount;
-									for (let i = 0; i < increse; i++) {
-										if (this.state.frames.length > 0) {
-											const lastFrame = this.state.frames[this.state.frames.length - 1];
-											globals.options.frames.push({
-												size: {
-													width: lastFrame.size.width,
-													height: lastFrame.size.height
-												},
-												position: {
-													x: lastFrame.position.x + 100,
-													y: lastFrame.position.y + 100
-												}
-											});
-										} else {
-											globals.options.frames.push({
-												size: {
-													width: 100,
-													height: 100
-												},
-												position: {
-													x: 0,
-													y: 0
-												}
-											});
-										}
+								const frames = globals.options.frames;
+								if (value > frames.length) {
+									for (let i = frames.length; i < value; i++) {
+										const lastFrame = frames[frames.length - 1];
+										frames.push({
+											size: {
+												width: lastFrame?.size?.width || 100,
+												height: lastFrame?.size?.height || 100
+											},
+											position: {
+												x: lastFrame?.position?.x + 100 || 0,
+												y: lastFrame?.position?.y + 100 || 0
+											},
+											buffer: null
+										});
 									};
-								} else if (value < this.state.frameCount) {
-									const decrease = this.state.frameCount - value;
-									for (let i = 0; i < decrease; i++) {
-										globals.options.frames.pop();
-									};
+								} else if (value < frames.length) {
+									frames.splice(value, frames.length - value);
 								};
 								this.setState({
 									frameCount: value,
-									frames: globals.options.frames
+									frames: frames
 								});
-								console.log(globals.options.frames);
+								globals.setOptions({
+									frames: frames
+								});
 							}}
-							min={0}
+							min={1}
 							max={10}
 							step={1}
 							placeholder='Frames'
@@ -111,9 +111,13 @@ export default class FramesOptions extends React.Component {
 											style={{ width: '100%' }}
 											defaultValue={frame.position.x}
 											onChange={(value) => {
-												globals.options.frames[index].position.x = value;
+												const frames = globals.options.frames;
+												frames[index].position.x = value;
 												this.setState({
-													frames: globals.options.frames
+													frames: frames
+												});
+												globals.setOptions({
+													frames: frames
 												});
 											}}
 											min={0} max={10000} step={1}
@@ -130,9 +134,13 @@ export default class FramesOptions extends React.Component {
 											style={{ width: '100%' }}
 											defaultValue={frame.position.y}
 											onChange={(value) => {
-												globals.options.frames[index].position.y = value;
+												const frames = globals.options.frames;
+												frames[index].position.y = value;
 												this.setState({
-													frames: globals.options.frames
+													frames: frames
+												});
+												globals.setOptions({
+													frames: frames
 												});
 											}}
 											min={0} max={10000} step={1}
@@ -152,9 +160,13 @@ export default class FramesOptions extends React.Component {
 											style={{ width: '100%' }}
 											defaultValue={frame.size.width}
 											onChange={(value) => {
-												globals.options.frames[index].size.width = value;
+												const frames = globals.options.frames;
+												frames[index].size.width = value;
 												this.setState({
-													frames: globals.options.frames
+													frames: frames
+												});
+												globals.setOptions({
+													frames: frames
 												});
 											}}
 											min={0} max={10000} step={1}
@@ -171,9 +183,13 @@ export default class FramesOptions extends React.Component {
 											style={{ width: '100%' }}
 											defaultValue={frame.size.height}
 											onChange={(value) => {
-												globals.options.frames[index].size.height = value;
+												const frames = globals.options.frames;
+												frames[index].size.height = value;
 												this.setState({
-													frames: globals.options.frames
+													frames: frames
+												});
+												globals.setOptions({
+													frames: frames
 												});
 											}}
 											min={0} max={10000} step={1}
@@ -181,6 +197,91 @@ export default class FramesOptions extends React.Component {
 										/>
 									</Col>
 								</Row>
+
+								{frame.buffer ?
+									<Row
+										style={{ width: '100%', alignItems: 'center' }}
+									>
+										<Col span={16} />
+
+										<Col span={2}>
+											<Button
+												type='primary'
+												size='small'
+												style={{ width: '100%' }}
+												onClick={() => {
+													const frames = globals.options.frames;
+													if (index > 0) {
+														// Move buffer to the previous frame
+														frames[index - 1].buffer = frames[index].buffer;
+														frames[index].buffer = null;
+													} else {
+														// Move buffer to the last frame
+														frames[frames.length - 1].buffer = frames[index].buffer;
+														frames[index].buffer = null;
+													}
+													this.setState({
+														frames: frames
+													});
+													globals.setOptions({
+														frames: frames
+													});
+												}}
+												icon={<ArrowUpOutlined />}
+											/>
+										</Col>
+
+										<Col span={1} />
+
+										<Col span={2}>
+											<Button
+												type='primary'
+												size='small'
+												style={{ width: '100%' }}
+												onClick={() => {
+													const frames = globals.options.frames;
+													if (index < frames.length - 1) {
+														// Move buffer to the next frame
+														frames[index + 1].buffer = frames[index].buffer;
+														frames[index].buffer = null;
+													} else {
+														// Move buffer to the first frame
+														frames[0].buffer = frames[index].buffer;
+														frames[index].buffer = null;
+													}
+													this.setState({
+														frames: frames
+													});
+													globals.setOptions({
+														frames: frames
+													});
+												}}
+												icon={<ArrowDownOutlined />}
+											/>
+										</Col>
+
+										<Col span={1} />
+
+										<Col span={2}>
+											<Button
+												type='primary'
+												size='small'
+												style={{ width: '100%' }}
+												onClick={() => {
+													const frames = globals.options.frames;
+													frames[index].buffer = null;
+													this.setState({
+														frames: frames
+													});
+													globals.setOptions({
+														frames: frames
+													});
+												}}
+												icon={<RedoOutlined />}
+											/>
+										</Col>
+									</Row>
+									: null}
 							</div>
 						</div>
 					);

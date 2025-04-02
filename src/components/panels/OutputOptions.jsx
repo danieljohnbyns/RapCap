@@ -7,32 +7,153 @@ import {
 	Button
 } from 'antd';
 
+import { Buffer } from 'buffer';
+
 import globals from '../../utils/globals.js';
 
 export default class OutputOptions extends React.Component {
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			name: globals.options.output.name,
 			scale: globals.options.output.scale,
 			format: globals.options.output.format
 		};
 	};
+
+	componentDidMount() {
+		this.setState({
+			name: globals.options.output.name,
+			scale: globals.options.output.scale,
+			format: globals.options.output.format
+		});
+
+		window.addEventListener('optionsUpdated', (event) => {
+			this.setState({
+				name: globals.options.output.name,
+				scale: globals.options.output.scale,
+				format: globals.options.output.format
+			});
+		});
+	};
+
 	render() {
 		return (
 			<div id='outputOptionsContainer'>
-				<Input
+				<Button
 					style={{ width: '100%' }}
-					defaultValue={globals.options.output.name}
-					value={this.state.name}
-					placeholder='File Name'
-					onChange={(event) => {
-						globals.options.output.name = event.target.value;
-						this.setState({
-							name: event.target.value
-						});
+					type='primary'
+					// In OutputOptions.jsx update the Export button's onClick handler:
+					onClick={async () => {
+						try {
+							const canvas = document.getElementById('previewCanvas');
+							if (!canvas) throw new Error('Canvas not found');
+
+							// Create temporary canvas for scaling
+							const tempCanvas = document.createElement('canvas');
+							const tempCtx = tempCanvas.getContext('2d');
+							const scale = this.state.scale;
+							const format = this.state.format;
+
+							// Set scaled dimensions
+							tempCanvas.width = canvas.width * scale;
+							tempCanvas.height = canvas.height * scale;
+
+							// Fill background for JPEG/WEBP
+							if (format !== 'png') {
+								tempCtx.fillStyle = '#ffffff'; // White background
+								tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+							};
+
+							// Scale and draw original image
+							tempCtx.drawImage(
+								canvas,
+								0, 0, canvas.width, canvas.height,
+								0, 0, tempCanvas.width, tempCanvas.height
+							);
+
+							// Get image data
+							const mimeType = `image/${format}`;
+							const dataUrl = tempCanvas.toDataURL(mimeType, 1.0);
+							const base64Data = dataUrl.split(',')[1];
+
+							const filename = await new Promise((resolve) => {
+								globals.swal.fire({
+									title: 'Export',
+									input: 'text',
+									inputLabel: 'Enter a file name',
+									inputPlaceholder: 'output',
+									inputValue: this.state.name,
+									showCancelButton: true,
+									confirmButtonText: 'Export',
+									cancelButtonText: 'Cancel',
+									inputValidator: (value) => {
+										if (!value)
+											return 'Please enter a file name';
+									}
+								}).then((result) => {
+									if (result.isConfirmed) {
+										resolve(result.value);
+									} else {
+										resolve(null);
+									}
+								});
+							});
+
+							if (!filename) return;
+							globals.options.output.name = filename;
+							this.setState({
+								name: filename
+							});
+							globals.setOptions({
+								output: {
+									name: filename,
+									scale: scale,
+									format: format
+								}
+							});
+
+							const buffer = Buffer.from(base64Data, 'base64');
+
+							window.api.saveFile(`${filename}.${format}`, buffer)
+								.then((result) => {
+									console.log('Export result:', result);
+
+									if (result.success) {
+										globals.swal.fire({
+											icon: 'success',
+											title: 'Export Successful',
+											text: `File saved to ${result.path}`
+										});
+									} else {
+										globals.swal.fire({
+											icon: 'error',
+											title: 'Export Error',
+											text: result.error
+										});
+									};
+								})
+								.catch((error) => {
+									globals.swal.fire({
+										icon: 'error',
+										title: 'Export Error',
+										text: error.message
+									});
+									console.error('Export error:', error);
+								});
+						} catch (error) {
+							globals.swal.fire({
+								icon: 'error',
+								title: 'Export Error',
+								text: error.message
+							});
+							console.error('Export error:', error);
+						};
 					}}
-				/>
+				>
+					Export
+				</Button>
 
 				<Row
 					style={{ alignItems: 'center', }}
@@ -103,70 +224,6 @@ export default class OutputOptions extends React.Component {
 						/>
 					</Col>
 				</Row>
-
-				<Button
-					style={{ width: '100%' }}
-					type='primary'
-					onClick={() => {
-						if (globals.options.output.name === '') {
-							globals.options.output.name = 'output';
-							globals.swal.mixin({
-								toast: true,
-								position: 'top-end',
-								showConfirmButton: false,
-								timer: 5000,
-								timerProgressBar: true,
-								didOpen: (toast) => {
-									toast.addEventListener('mouseenter', globals.swal.stopTimer);
-									toast.addEventListener('mouseleave', globals.swal.resumeTimer);
-								}
-							}).fire({
-								icon: 'warning',
-								title: <p>File name cannot be empty</p>
-							});
-						};
-
-						globals.downloadImage(
-							globals.options.output.name,
-							globals.options.output.format,
-							globals.options.output.scale
-						).then((result) => {
-							globals.swal.mixin({
-								toast: true,
-								position: 'top-end',
-								showConfirmButton: false,
-								timer: 5000,
-								timerProgressBar: true,
-								didOpen: (toast) => {
-									toast.addEventListener('mouseenter', globals.swal.stopTimer);
-									toast.addEventListener('mouseleave', globals.swal.resumeTimer);
-								}
-							}).fire({
-								icon: 'success',
-								title: <p>Image exported successfully</p>
-							});
-						})
-							.catch((error) => {
-								globals.swal.mixin({
-									toast: true,
-									position: 'top-end',
-									showConfirmButton: false,
-									timer: 5000,
-									timerProgressBar: true,
-									didOpen: (toast) => {
-										toast.addEventListener('mouseenter', globals.swal.stopTimer);
-										toast.addEventListener('mouseleave', globals.swal.resumeTimer);
-									}
-								}).fire({
-									icon: 'error',
-									title: <p>Image export failed</p>,
-									html: <p>{`${error}`}</p>
-								});
-							});
-					}}
-				>
-					Export
-				</Button>
 			</div>
 		);
 	};

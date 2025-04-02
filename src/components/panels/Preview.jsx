@@ -15,293 +15,180 @@ export default class Preview extends React.Component {
 	constructor(props) {
 		super(props);
 		this.canvasRef = React.createRef();
-		this.parentRef = React.createRef();
-
+		this.canvas = null;
+		this.context = null;
 		this.imageTemplate = null;
+	};
 
-		this.state = {
-			snapshots: []
+	drawSnapshots = async () => {
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		for (const frame of globals.options.frames) {
+			if (!frame.buffer) continue;
+			console.log(frame);
+			const image = new Image();
+			image.crossOrigin = 'anonymous';
+			image.src = frame.buffer;
+			await new Promise((resolve) => {
+				image.onload = () => {
+					this.context.save();
+					this.context.beginPath();
+					this.context.rect(frame.position.x, frame.position.y, frame.size.width, frame.size.height);
+					this.context.clip();
+
+					// Calculate scaling to fit the buffer into the frame
+					const scaleX = frame.size.width / image.width;
+					const scaleY = frame.size.height / image.height;
+					const scale = Math.max(scaleX, scaleY); // Fill the frame while clipping overflow
+
+					const scaledWidth = image.width * scale;
+					const scaledHeight = image.height * scale;
+
+					// Center the image within the frame
+					const offsetX = frame.position.x + (frame.size.width - scaledWidth) / 2;
+					const offsetY = frame.position.y + (frame.size.height - scaledHeight) / 2;
+
+					this.context.drawImage(image, offsetX, offsetY, scaledWidth, scaledHeight);
+					this.context.restore();
+					resolve();
+				};
+			});
 		};
 	};
 
-	drawCanvas = () => {
-		const canvas = this.canvasRef.current;
-		const ctx = canvas.getContext('2d');
-		const parent = this.parentRef.current;
+	drawImageTemplate = () => {
+		if (!this.imageTemplate) return;
 
+		const parent = this.canvasRef.current.parentElement;
+		const parentWidth = parent.clientWidth;
+		const parentHeight = parent.clientHeight;
+
+		const canvasWidth = this.canvasRef.current.width;
+		const canvasHeight = this.canvasRef.current.height;
+
+		const scaleX = parentWidth / canvasWidth;
+		const scaleY = parentHeight / canvasHeight;
+		const scale = Math.min(scaleX, scaleY);
+
+		const style = {
+			transform: `scale(${scale})`,
+			transformOrigin: 'top left',
+			width: `${this.canvasRef.current.offsetWidth}px`,
+			height: `${this.canvasRef.current.offsetHeight}px`,
+			position: 'absolute',
+			left: `${(parentWidth - canvasWidth * scale) / 2}px`,
+			top: `${(parentHeight - canvasHeight * scale) / 2}px`,
+			pointerEvents: 'none',
+			borderRadius: `${1 / scale}rem`
+		};
+		for (const [key, value] of Object.entries(style)) {
+			this.canvasRef.current.style[key] = value;
+		};
+
+		const previewOverlay = document.getElementById('previewOverlay');
+		for (const [key, value] of Object.entries(style)) {
+			previewOverlay.style[key] = value;
+		};
+		previewOverlay.style.zIndex = '2';
+
+		this.context.drawImage(this.imageTemplate, 0, 0, this.canvas.width, this.canvas.height);
+	};
+
+	drawFrames = () => {
+		if (!this.imageTemplate) return;
+		for (const frame of Array.from(document.getElementsByClassName('previewFrame')))
+			frame.remove();
+
+		const parent = this.canvasRef.current.parentElement;
+		const parentWidth = parent.clientWidth;
+		const parentHeight = parent.clientHeight;
+
+		const canvasWidth = this.canvasRef.current.width;
+		const canvasHeight = this.canvasRef.current.height;
+
+		const scaleX = parentWidth / canvasWidth;
+		const scaleY = parentHeight / canvasHeight;
+		const scale = Math.min(scaleX, scaleY);
+
+		const previewOverlay = document.getElementById('previewOverlay');
 		const frames = globals.options.frames;
-		const frameElements = [];
+
 		for (const frame of frames) {
 			const frameElement = document.createElement('div');
-			frameElement.className = 'frame';
+			frameElement.className = 'previewFrame';
+			frameElement.style.position = 'absolute';
+			frameElement.style.pointerEvents = 'none';
+			frameElement.style.left = `${frame.position.x}px`;
+			frameElement.style.top = `${frame.position.y}px`;
+			frameElement.style.width = `${frame.size.width}px`;
+			frameElement.style.height = `${frame.size.height}px`;
+			frameElement.style.border = `solid ${0.25 / scale}rem var(--color-light)`;
+			frameElement.style.boxShadow = `0 0 ${0.25 / scale}rem var(--color-dark)`;
 
-			frameElements.push(frameElement);
-			parent.appendChild(frameElement);
-		};
-
-		const draw = () => {
-			if (globals.options.frames.length !== frameElements.length) {
-				// Remove old frame elements
-				for (const frameElement of frameElements) {
-					parent.removeChild(frameElement);
-				};
-
-				// Create new frame elements
-				frameElements.length = 0;
-				for (const frame of frames) {
-					const frameElement = document.createElement('div');
-					frameElement.className = 'frame';
-					frameElement.style.position = 'absolute';
-					frameElement.style.border = 'solid 0.5rem var(--color-secondary)';
-					frameElement.style.pointerEvents = 'none';
-
-					frameElements.push(frameElement);
-					parent.appendChild(frameElement);
-				};
-			};
-
-			const parentWidth = parent.offsetWidth;
-			const parentHeight = parent.offsetHeight;
-
-			// Maintain aspect ratio
-			const imageAspectRatio = this.imageTemplate.width / this.imageTemplate.height;
-			let canvasWidth = parentWidth;
-			let canvasHeight = parentWidth / imageAspectRatio;
-			if (canvasHeight > parentHeight) {
-				canvasHeight = parentHeight;
-				canvasWidth = parentHeight * imageAspectRatio;
-			};
-			canvas.width = canvasWidth;
-			canvas.height = canvasHeight;
-
-			// Draw Snapshots
-			for (let i = 0; i < this.state.snapshots.length; i++) {
-				const snapshot = this.state.snapshots[i];
-				const frame = frames[i];
-				if (!frame) continue;
-
-				const ratioX = canvas.offsetWidth / this.imageTemplate.width;
-				const ratioY = canvas.offsetHeight / this.imageTemplate.height;
-				const ratio = Math.min(ratioX, ratioY);
-
-				const frameWidth = frame.size.width * ratio;
-				const frameHeight = frame.size.height * ratio;
-				const frameLeft = frame.position.x * ratio;
-				const frameTop = frame.position.y * ratio;
-
-				const snapshotAspectRatio = snapshot.width / snapshot.height;
-				const frameAspectRatio = frameWidth / frameHeight;
-
-				let drawWidth, drawHeight, offsetX, offsetY;
-
-				if (snapshotAspectRatio > frameAspectRatio) {
-					// Snapshot is wider: Match height to frame, scale width proportionally
-					drawHeight = frameHeight;
-					drawWidth = drawHeight * snapshotAspectRatio;
-					offsetX = (frameWidth - drawWidth) / 2;
-					offsetY = 0;
-				} else {
-					// Snapshot is taller: Match width to frame, scale height proportionally
-					drawWidth = frameWidth;
-					drawHeight = drawWidth / snapshotAspectRatio;
-					offsetX = 0;
-					offsetY = (frameHeight - drawHeight) / 2;
-				};
-
-				// Save context to apply clipping
-				ctx.save();
-				// Define clipping path to frame's boundaries
-				ctx.beginPath();
-				ctx.rect(frameLeft, frameTop, frameWidth, frameHeight);
-				ctx.clip();
-
-				// Draw the image (will be clipped to the frame)
-				ctx.drawImage(
-					snapshot,
-					frameLeft + offsetX,
-					frameTop + offsetY,
-					drawWidth,
-					drawHeight
-				);
-
-				// Restore context to remove clipping
-				ctx.restore();
-			};
-
-			if (this.imageTemplate)
-				ctx.drawImage(this.imageTemplate, 0, 0, canvas.width, canvas.height);
-			requestAnimationFrame(draw);
-
-			// Get the ratio of canvas' original size to the current size
-			const ratioX = canvas.offsetWidth / this.imageTemplate.width;
-			const ratioY = canvas.offsetHeight / this.imageTemplate.height;
-			const ratio = Math.min(ratioX, ratioY);
-
-			for (let i = 0; i < frames.length; i++) {
-				const frame = frames[i];
-				const frameElement = frameElements[i];
-
-				frameElement.style.width = `${frame.size.width * ratio}px`;
-				frameElement.style.height = `${frame.size.height * ratio}px`;
-				frameElement.style.left = `${(frame.position.x * ratio) + canvas.offsetLeft}px`;
-				frameElement.style.top = `${(frame.position.y * ratio) + canvas.offsetTop}px`;
-			};
-		};
-
-		draw();
-	};
-
-	importImageTemplate = async () => {
-		try {
-			const result = await window.api.openImageDialog();
-
-			if (result?.error) {
-				console.error('Import failed:', result.error);
-				return;
-			};
-
-			if (result) {
-				console.log('Imported image:', result);
-				globals.options.imageTemplate = result;
-				const image = new Image();
-				image.src = result;
-				image.onload = () => {
-					this.imageTemplate = image;
-					this.drawCanvas();
-				};
-			};
-		} catch (error) {
-			console.error('IPC communication error:', error);
+			previewOverlay.appendChild(frameElement);
 		};
 	};
 
-	handleImportImageTemplate = (event) => {
-		this.importImageTemplate(event.detail);
-	};
+	async componentDidMount() {
+		this.canvas = this.canvasRef.current;
+		this.context = this.canvas.getContext('2d');
 
-	snapshot = (buffer) => {
-		const image = new Image();
-		image.src = buffer;
-		image.onload = () => {
-			const snapshots = this.state.snapshots;
-			if (snapshots.length === globals.options.frames.length)
-				snapshots.shift();
-			snapshots.push(image);
-			this.setState({ snapshots });
-		};
-	};
-
-	downloadImage = (filename, format = 'png', scale = 1) => {
-		return new Promise((resolve, reject) => {
-			console.log('Download image:', filename, format, scale);
-			if (!this.imageTemplate) {
-				reject(new Error('No image template available'));
-				return;
-			}
-
-			try {
-				const canvas = this.canvasRef.current;
-
-				// Validate and normalize parameters
-				const validFormats = ['png', 'jpeg', 'webp'];
-				const sanitizedFormat = validFormats.includes(format.toLowerCase())
-					? format.toLowerCase()
-					: 'png';
-
-				const sanitizedScale = Math.min(Math.max(Number(scale) || 1, 0.1, 4));
-				const sanitizedFilename = (filename || 'snapshot')
-					.replace(/[^a-z0-9\-_]/gi, '_')
-					.substring(0, 50);
-
-				// Create scaled canvas
-				const scaledCanvas = document.createElement('canvas');
-				const scaledCtx = scaledCanvas.getContext('2d');
-
-				scaledCanvas.width = canvas.width * sanitizedScale;
-				scaledCanvas.height = canvas.height * sanitizedScale;
-
-				// Preserve image quality
-				scaledCtx.imageSmoothingEnabled = true;
-				scaledCtx.imageSmoothingQuality = 'high';
-				scaledCtx.drawImage(
-					canvas,
-					0, 0, canvas.width, canvas.height,
-					0, 0, scaledCanvas.width, scaledCanvas.height
-				);
-
-				// Generate data URL with quality settings for JPEG
-				const quality = sanitizedFormat === 'jpeg' ? 0.92 : 1;
-				const dataUrl = scaledCanvas.toDataURL(`image/${sanitizedFormat}`, quality);
-
-				// Generate filename with correct extension
-				const fileName = `${sanitizedFilename}.${sanitizedFormat}`;
-
-				// Save file
-				window.api.saveFile(fileName, dataUrl)
-					.then((result) => {
-						if (result.success) {
-							console.log('File saved to:', result.path);
-							resolve(result.path);
-						} else {
-							console.error('Save failed:', result.error);
-							reject(new Error(result.error));
-						};
-					})
-					.catch((error) => {
-						console.error('Save error:', error);
-						reject(error);
-					});
-			} catch (error) {
-				console.error('Save error:', error);
-				reject(error);
+		const imageTemplate = new Image();
+		imageTemplate.crossOrigin = 'anonymous';
+		imageTemplate.src = globals.options.imageTemplate;
+		await new Promise((resolve) => {
+			imageTemplate.onload = () => {
+				this.imageTemplate = imageTemplate;
+				resolve();
 			};
 		});
+		this.canvas.width = imageTemplate.width;
+		this.canvas.height = imageTemplate.height;
+
+		await this.drawSnapshots();
+		this.drawImageTemplate();
+		this.drawFrames();
+		
+		window.addEventListener('optionsUpdated', async (event) => {
+			await this.drawSnapshots();
+			this.drawImageTemplate();
+			this.drawFrames();
+		});
 	};
-
-	componentDidMount() {
-		const image = new Image();
-		image.src = globals.options.imageTemplate || '';
-		image.onload = () => {
-			this.imageTemplate = image;
-			this.drawCanvas();
-		};
-
-		globals.snapshot = this.snapshot;
-		globals.downloadImage = this.downloadImage;
-		window.addEventListener('import-image-template', this.handleImportImageTemplate);
-	};
-
-	componentWillUnmount() {
-		window.removeEventListener('import-image-template', this.handleImportImageTemplate);
-	};	
 
 	render() {
 		return (
 			<>
 				<div id='previewContainer'>
-					<div ref={this.parentRef} style={{ width: '100%', height: '100%' }}>
+					<div style={{ width: '100%', height: '100%' }}>
 						<canvas
 							id='previewCanvas'
 							ref={this.canvasRef}
-							style={{ display: 'block', margin: '0 auto' }}
 						></canvas>
+
+						<div id='previewOverlay' />
 					</div>
 				</div>
 
 				<div id='cameraControls'>
-					<Button
+					{/* <Button
 						type='primary'
 						icon={<ExportOutlined />}
 						onClick={() => { }}
 					>
 						Launch preview Window
-					</Button>
+					</Button> */}
 
 					<Button
 						type='primary'
 						icon={<DeleteOutlined />}
 						onClick={() => {
-							this.setState({ snapshots: [] });
+							globals.setOptions({
+								frames: globals.options.frames.map((frame) => {
+									frame.buffer = null;
+									return frame;
+								})
+							});
+							this.drawSnapshots();
 						}}
 					>
 						Clear frames
