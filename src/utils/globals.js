@@ -94,6 +94,7 @@ const globals = {
 	saveOptions: () => {
 		localStorage.setItem('options', JSON.stringify(globals.options));
 	},
+
 	loadOptions: () => {
 		const options = localStorage.getItem('options');
 		if (options) {
