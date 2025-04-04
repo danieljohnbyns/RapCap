@@ -210,21 +210,18 @@ export default class FramesOptions extends React.Component {
 												size='small'
 												style={{ width: '100%' }}
 												onClick={() => {
-													const frames = globals.options.frames;
-													if (index > 0) {
-														// Move buffer to the previous frame
-														frames[index - 1].buffer = frames[index].buffer;
-														frames[index].buffer = null;
-													} else {
-														// Move buffer to the last frame
-														frames[frames.length - 1].buffer = frames[index].buffer;
-														frames[index].buffer = null;
-													}
+													const framesTemp = JSON.parse(JSON.stringify(this.state.frames));
+													const thisFrameIndex = index;
+													const previousFrameIndex = (index - 1 + framesTemp.length) % framesTemp.length;
+
+													[framesTemp[thisFrameIndex].buffer, framesTemp[previousFrameIndex].buffer] =
+														[framesTemp[previousFrameIndex].buffer, framesTemp[thisFrameIndex].buffer];
+
 													this.setState({
-														frames: frames
+														frames: framesTemp
 													});
 													globals.setOptions({
-														frames: frames
+														frames: framesTemp
 													});
 												}}
 												icon={<ArrowUpOutlined />}
@@ -239,21 +236,18 @@ export default class FramesOptions extends React.Component {
 												size='small'
 												style={{ width: '100%' }}
 												onClick={() => {
-													const frames = globals.options.frames;
-													if (index < frames.length - 1) {
-														// Move buffer to the next frame
-														frames[index + 1].buffer = frames[index].buffer;
-														frames[index].buffer = null;
-													} else {
-														// Move buffer to the first frame
-														frames[0].buffer = frames[index].buffer;
-														frames[index].buffer = null;
-													}
+													const framesTemp = JSON.parse(JSON.stringify(this.state.frames));
+													const thisFrameIndex = index;
+													const nextFrameIndex = (index + 1) % framesTemp.length;
+
+													[framesTemp[thisFrameIndex].buffer, framesTemp[nextFrameIndex].buffer] =
+														[framesTemp[nextFrameIndex].buffer, framesTemp[thisFrameIndex].buffer];
+
 													this.setState({
-														frames: frames
+														frames: framesTemp
 													});
 													globals.setOptions({
-														frames: frames
+														frames: framesTemp
 													});
 												}}
 												icon={<ArrowDownOutlined />}
