@@ -30,7 +30,12 @@ export default class Viewport extends React.Component {
 			});
 
 			this.state.swapy.onSwap((event) => {
-				console.log(event);
+				window.dispatchEvent(new CustomEvent('swapy-swap', {
+					detail: {
+						fromSlot: event.fromSlot,
+						toSlot: event.toSlot
+					}
+				}));
 			});
 			this.state.swapy.onBeforeSwap((event) => {
 				const toBeRemovedElement = Array.from(document.getElementsByClassName('swapy-destination'));

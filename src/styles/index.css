@@ -110,15 +110,15 @@ html {
 	height: 2rem;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: var(--color-primary-complement);
-	border: solid 0.5rem var(--color-primary);
+	background-color: var(--color-plain);
+	border: solid 0.5rem var(--color-plain-complement);
 	border-radius: 1rem;
 }
 ::-webkit-scrollbar-track {
-	background-color: var(--color-primary);
+	background-color: var(--color-plain-complement);
 }
 ::-webkit-scrollbar-corner {
-	background-color: var(--color-primary-complement);
+	background-color: var(--color-plain);
 	border-radius: 0.5rem;
 }
 

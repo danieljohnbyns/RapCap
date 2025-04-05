@@ -21,22 +21,22 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 		<ConfigProvider
 			theme={{
 				token: {
-					colorPrimary: rootToHex('--color-primary'),
-					colorBgBase: rootToHex('--color-primary'),
-					colorBgContainer: rootToHex('--color-primary'),
-					colorBgLayout: rootToHex('--color-primary'),
-					colorBgElevated: rootToHex('--color-primary'),
-					colorBgSpotlight: rootToHex('--color-primary'),
-					colorFill: rootToHex('--color-primary'),
-					colorFillContent: rootToHex('--color-primary'),
-					colorFillAlter: rootToHex('--color-primary'),
-					colorFillSecondary: rootToHex('--color-primary'),
+					colorPrimary: rootToHex('--color-plain-complement'),
+					colorBgBase: rootToHex('--color-plain-complement'),
+					colorBgContainer: rootToHex('--color-plain-complement'),
+					colorBgLayout: rootToHex('--color-plain-complement'),
+					colorBgElevated: rootToHex('--color-plain-complement'),
+					colorBgSpotlight: rootToHex('--color-plain-complement'),
+					colorFill: rootToHex('--color-plain-complement'),
+					colorFillContent: rootToHex('--color-plain-complement'),
+					colorFillAlter: rootToHex('--color-plain-complement'),
+					colorFillSecondary: rootToHex('--color-plain-complement'),
 
-					colorFillContentHover: rootToHex('--color-primary'),
+					colorFillContentHover: rootToHex('--color-plain-complement'),
 
 					borderRadius: '1rem',
-					colorBorder: rootToHex('--color-primary'),
-					colorBorderSecondary: rootToHex('--color-primary'),
+					colorBorder: rootToHex('--color-plain-complement'),
+					colorBorderSecondary: rootToHex('--color-plain-complement'),
 
 					colorTextBase: rootToHex('--color-light'),
 					colorTextLightSolid: rootToHex('--color-light'),
@@ -47,6 +47,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 					colorIcon: rootToHex('--color-light'),
 					colorIconHover: rootToHex('--color-light'),
+
+					borderRadiusLG: '1rem',
+					borderRadiusSM: '1rem',
+					borderRadiusXS: '1rem',
 				},
 				components: {
 					Button: {

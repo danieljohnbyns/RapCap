@@ -144,15 +144,16 @@ export default class Preview extends React.Component {
 		this.canvas.width = imageTemplate.width;
 		this.canvas.height = imageTemplate.height;
 
-		await this.drawSnapshots();
-		this.drawImageTemplate();
-		this.drawFrames();
-		
-		window.addEventListener('optionsUpdated', async (event) => {
+		const render = async () => {
 			await this.drawSnapshots();
 			this.drawImageTemplate();
 			this.drawFrames();
-		});
+		};
+		render();
+
+		window.addEventListener('optionsUpdated', async (event) => render);
+		window.addEventListener('resize', async (event) => render);
+		window.addEventListener('swapy-swap', async (event) => render);
 	};
 
 	render() {

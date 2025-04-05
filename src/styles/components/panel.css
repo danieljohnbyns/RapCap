@@ -14,8 +14,8 @@
 	height: 100%;
 
 	border-radius: 1rem;
-	border: solid 0.125rem var(--color-primary);
-	background-color: color-mix(in oklab, var(--color-primary) 50%, var(--color-dark));
+	border: solid 0.125rem var(--color-plain-complement);
+	background-color: color-mix(in oklab, var(--color-plain-complement) 50%, var(--color-dark));
 
 	display: flex;
 	flex-direction: column;
@@ -37,7 +37,7 @@
 	justify-content: center;
 	align-items: center;
 
-	background-color: var(--color-primary);
+	background-color: var(--color-plain-complement);
 	z-index: 2;
 }
 
@@ -61,11 +61,15 @@
 
 .panel[data-swapy-highlighted] {
 	opacity: 1;
+	z-index: 10;
 }
 .panel[data-swapy-highlighted] > .container {
 	position: relative;
-	background-color: rgba(var(--rgb-primary), 0.25);
+	background-color: rgba(var(--rgb-plain), 0.25);
 	z-index: 10;
+}
+.panel[data-swapy-highlighted] > .container > header {
+	background-color: rgba(var(--rgb-plain), 0.75);
 }
 .panel.swapy-destination::before {
 	content: "";
