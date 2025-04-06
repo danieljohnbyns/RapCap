@@ -135,7 +135,7 @@ ipcMain.handle('save-file', async (_, { fileName, data }) => {
 		log.info('Starting file save...');
 		const downloadsPath = app.getPath('downloads');
 		log.debug('Downloads path:', downloadsPath);
-		
+
 		const filePath = path.join(downloadsPath, fileName);
 		log.debug('Full path:', filePath);
 
@@ -161,7 +161,6 @@ ipcMain.handle('load-image', async (_, url) => {
 		throw error;
 	};
 });
-
 
 protocol.registerSchemesAsPrivileged([
 	{

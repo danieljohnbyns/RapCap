@@ -2,6 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ConfigProvider, theme } from 'antd';
 
+import {
+	HashRouter,
+	Routes,
+	Route
+} from 'react-router-dom';
+
 // import './styles/font-face.css';
 import './styles/index.css';
 
@@ -62,7 +68,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 				]
 			}}
 		>
-			<Viewport />
+			<HashRouter basename='/'>
+				<Routes>
+					<Route path='/' element={<Viewport />} />
+				</Routes>
+			</HashRouter>
 		</ConfigProvider>
 	</React.StrictMode>
 );

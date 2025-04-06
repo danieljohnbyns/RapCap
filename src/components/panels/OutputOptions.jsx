@@ -97,7 +97,7 @@ export default class OutputOptions extends React.Component {
 										resolve(result.value);
 									} else {
 										resolve(null);
-									}
+									};
 								});
 							});
 
