@@ -57,7 +57,10 @@ export default class Preview extends React.Component {
 
 	drawImageTemplate = () => {
 		if (!this.imageTemplate) return;
+		this.context.drawImage(this.imageTemplate, 0, 0, this.canvas.width, this.canvas.height);
+	};
 
+	resizeCanvas = () => {
 		const parent = this.canvasRef.current.parentElement;
 		const parentWidth = parent.clientWidth;
 		const parentHeight = parent.clientHeight;
@@ -89,8 +92,6 @@ export default class Preview extends React.Component {
 			previewOverlay.style[key] = value;
 		};
 		previewOverlay.style.zIndex = '2';
-
-		this.context.drawImage(this.imageTemplate, 0, 0, this.canvas.width, this.canvas.height);
 	};
 
 	drawFrames = () => {
@@ -128,6 +129,15 @@ export default class Preview extends React.Component {
 		};
 	};
 
+	renderCanvas = async () => {
+		this.canvas.width = this.imageTemplate.width;
+		this.canvas.height = this.imageTemplate.height;
+		await this.drawSnapshots();
+		this.drawImageTemplate();
+		this.drawFrames();
+		this.resizeCanvas();
+	};
+
 	async componentDidMount() {
 		this.canvas = this.canvasRef.current;
 		this.context = this.canvas.getContext('2d');
@@ -141,19 +151,29 @@ export default class Preview extends React.Component {
 				resolve();
 			};
 		});
-		this.canvas.width = imageTemplate.width;
-		this.canvas.height = imageTemplate.height;
+		this.renderCanvas();
 
-		const render = async () => {
-			await this.drawSnapshots();
-			this.drawImageTemplate();
-			this.drawFrames();
-		};
-		render();
+		window.addEventListener('optionsUpdated', this.renderCanvas);
+		window.addEventListener('resize', this.renderCanvas);
+		window.addEventListener('swapy-swap', this.renderCanvas);
 
-		window.addEventListener('optionsUpdated', async (event) => render);
-		window.addEventListener('resize', async (event) => render);
-		window.addEventListener('swapy-swap', async (event) => render);
+		window.addEventListener('import-image-template', async (event) => {
+			const dialog = await window.api.openImageDialog();
+			if (!dialog) return;
+
+			const imageTemplate = new Image();
+			imageTemplate.crossOrigin = 'anonymous';
+			imageTemplate.src = dialog;
+			await new Promise((resolve) => {
+				imageTemplate.onload = () => {
+					this.imageTemplate = imageTemplate;
+					resolve();
+				};
+			});
+			globals.setOptions({ imageTemplate: dialog });
+
+			this.renderCanvas();
+		});
 	};
 
 	render() {

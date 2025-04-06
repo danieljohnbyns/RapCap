@@ -62,7 +62,7 @@ export default class Camera extends React.Component {
 			device = this.state.mediaDevices[0];
 		globals.setOptions({
 			mediaDevice: device
-		}, true);
+		});
 		this.videoRef.current.srcObject = null;
 		this.videoRef.current.srcObject = await navigator.mediaDevices.getUserMedia({
 			video: {
@@ -269,6 +269,9 @@ export default class Camera extends React.Component {
 
 						onChange={(value) => {
 							globals.setOptions({
+								countdown: value
+							});
+							this.setState({
 								countdown: value
 							});
 						}}
