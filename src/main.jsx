@@ -40,7 +40,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 					colorFillContentHover: rootToHex('--color-plain-complement'),
 
-					borderRadius: '1rem',
 					colorBorder: rootToHex('--color-plain-complement'),
 					colorBorderSecondary: rootToHex('--color-plain-complement'),
 
@@ -54,6 +53,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 					colorIcon: rootToHex('--color-light'),
 					colorIconHover: rootToHex('--color-light'),
 
+					borderRadius: '1rem',
 					borderRadiusLG: '1rem',
 					borderRadiusSM: '1rem',
 					borderRadiusXS: '1rem',
