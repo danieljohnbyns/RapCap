@@ -7,8 +7,6 @@ const globals = {
 	 */
 	swal: withReactContent(Swal),
 
-	mounted: [],
-
 	/**
 	 * @typedef {{
 	 * 		mediaDevices: MediaDeviceInfo[],

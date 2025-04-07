@@ -22,8 +22,6 @@ export default class OutputOptions extends React.Component {
 	};
 
 	componentDidMount() {
-		if (globals.mounted.includes('outputOptions')) return;
-
 		this.setState({
 			name: globals.options.output.name,
 			scale: globals.options.output.scale,
@@ -37,8 +35,6 @@ export default class OutputOptions extends React.Component {
 				format: globals.options.output.format
 			});
 		});
-
-		globals.mounted.push('outputOptions');
 	};
 
 	render() {

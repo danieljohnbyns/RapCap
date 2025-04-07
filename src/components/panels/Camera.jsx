@@ -158,8 +158,6 @@ export default class Camera extends React.Component {
 	};
 
 	async componentDidMount() {
-		if (globals.mounted.includes('camera')) return;
-
 		await this.resolveDevices();
 		await this.startDevice();
 
@@ -184,8 +182,6 @@ export default class Camera extends React.Component {
 				this.startDevice(globals.options.mediaDevice);
 			};
 		};
-
-		globals.mounted.push('camera');
 	};
 
 	shoot = () => {

@@ -26,8 +26,6 @@ export default class Viewport extends React.Component {
 	};
 
 	componentDidMount() {
-		if (globals.mounted.includes('viewport')) return;
-
 		if (this.state.container) {
 			this.state.swapy = createSwapy(this.state.container, {
 				animation: 'dynamic'
@@ -59,8 +57,6 @@ export default class Viewport extends React.Component {
 				};
 			});
 		};
-
-		globals.mounted.push('viewport');
 	};
 	componentWillUnmount() {
 		this.state.swapy?.destroy();

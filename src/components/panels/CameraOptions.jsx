@@ -22,8 +22,6 @@ export default class cameraOptions extends React.Component {
 	};
 
 	async componentDidMount() {
-		if (globals.mounted.includes('cameraOptions')) return;
-
 		this.setState({
 			mediaDevice: globals.options.mediaDevice,
 			mediaDevices: globals.options.mediaDevices
@@ -37,8 +35,6 @@ export default class cameraOptions extends React.Component {
 				});
 			}, 100);
 		});
-
-		globals.mounted.push('cameraOptions');
 	};
 
 	render() {
