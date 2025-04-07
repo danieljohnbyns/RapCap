@@ -24,7 +24,8 @@ export default class Camera extends React.Component {
 			countdown: globals.options.countdown,
 			currentCountdown: 0,
 			mediaDevices: globals.options.mediaDevices,
-			mediaDevice: globals.options.mediaDevice
+			mediaDevice: globals.options.mediaDevice,
+			frames: []
 		};
 	};
 
@@ -161,13 +162,24 @@ export default class Camera extends React.Component {
 		await this.resolveDevices();
 		await this.startDevice();
 
+		this.setState({
+			countdown: globals.options.countdown,
+			currentCountdown: 0,
+			frames: globals.options.frames
+		});
+
 		window.addEventListener('optionsUpdated', (event) => {
+			this.setState({
+				frames: globals.options.frames
+			});
+
 			if (this.state.mediaDevice !== globals.options.mediaDevice) {
 				this.stopDevice();
 				this.startDevice(globals.options.mediaDevice);
 
 				return;
 			};
+
 			this.setState({
 				countdown: globals.options.countdown,
 				currentCountdown: 0
@@ -232,7 +244,9 @@ export default class Camera extends React.Component {
 							<Button
 								type='primary'
 								icon={<CameraOutlined />}
-								disabled={this.state.currentCountdown > 0}
+								disabled={
+									(this.state.currentCountdown > 0) || !this.state.frames.find((frame) => !frame.buffer)
+								}
 								onClick={async () => {
 									this.setState({
 										currentCountdown: globals.options.countdown
