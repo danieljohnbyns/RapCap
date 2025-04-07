@@ -51,22 +51,67 @@ const globals = {
 		contrast: 100,
 		faceDetection: false,
 
-		imageTemplate: 'https://scontent.fmnl32-1.fna.fbcdn.net/v/t1.15752-9/486201425_1352028196055567_4472596194566381759_n.png?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeG0H45iUrOAV41tbqcZ5FchYmUrP4nmBbpiZSs_ieYFusoCKQ3K_BYS_bSIWC5TgIuLh7sWKdpVDepF0Bjs2TK4&_nc_ohc=PzCCgGgPj5MQ7kNvgHkccSY&_nc_oc=AdnpJ24JJOVSIWW9JI-FPAbsfRThLmh10Wul3rWVukSgTdMkJQfICJ0VjPLkf6xXXlA&_nc_zt=23&_nc_ht=scontent.fmnl32-1.fna&oh=03_Q7cD1wG76asTo1bD0ppkVTdPc8dJFvOrzXpXPUTZZHVndwmIPg&oe=6813B08F',
+		imageTemplate: 'https://raw.githubusercontent.com/danieljohnbyns/RapCap/refs/heads/main/src/assets/images/Default%20Frame.png',
 
 		continuousCapture: false,
 		frames: [
 			{
 				size: {
-					width: 100,
-					height: 100
+					width: 360,
+					height: 200
 				},
 				position: {
-					x: 0,
-					y: 0
+					x: 40,
+					y: 60
 				},
 				resolution: {
-					width: 100,
-					height: 100
+					width: 360,
+					height: 200
+				},
+				buffer: null
+			},
+			{
+				size: {
+					width: 360,
+					height: 200
+				},
+				position: {
+					x: 40,
+					y: 300
+				},
+				resolution: {
+					width: 360,
+					height: 200
+				},
+				buffer: null
+			},
+			{
+				size: {
+					width: 360,
+					height: 200
+				},
+				position: {
+					x: 40,
+					y: 540
+				},
+				resolution: {
+					width: 360,
+					height: 200
+				},
+				buffer: null
+			},
+			{
+				size: {
+					width: 622,
+					height: 680
+				},
+				position: {
+					x: 458,
+					y: 60
+				},
+				resolution: {
+					width: 458,
+					height: 60
 				},
 				buffer: null
 			}
