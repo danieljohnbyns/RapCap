@@ -21,7 +21,6 @@ module.exports = {
 				name: 'rapcap',
 				setupIcon: './src/assets/icons/icon.ico',
 				exe: 'rapcap.exe',
-				loadingGif: './assets/icons/loading.gif',
 				authors: 'Daniel John Baynosa'
 			}
 		},
