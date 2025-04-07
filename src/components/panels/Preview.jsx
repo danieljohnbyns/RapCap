@@ -117,8 +117,8 @@ export default class Preview extends React.Component {
 			frameElement.style.top = `${frame.position.y}px`;
 			frameElement.style.width = `${frame.size.width}px`;
 			frameElement.style.height = `${frame.size.height}px`;
-			frameElement.style.border = `solid ${0.25 / scale}rem var(--color-light)`;
-			frameElement.style.boxShadow = `0 0 ${0.25 / scale}rem var(--color-dark)`;
+			frameElement.style.border = `solid ${0.25 / scale}rem var(--color-primary-complement)`;
+			frameElement.style.boxShadow = `0 0 ${0.5 / scale}rem var(--color-dark)`;
 
 			previewOverlay.appendChild(frameElement);
 		};
