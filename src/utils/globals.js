@@ -141,6 +141,12 @@ const globals = {
 	},
 
 	loadOptions: () => {
+		const version = localStorage.getItem('version');
+		if (version !== '1.0.0') {
+			localStorage.clear();
+			localStorage.setItem('version', '1.0.0');
+		};
+
 		const options = localStorage.getItem('options');
 		if (options) {
 			try {
