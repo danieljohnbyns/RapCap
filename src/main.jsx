@@ -8,7 +8,13 @@ import {
 	Route
 } from 'react-router-dom';
 
-// import './styles/font-face.css';
+import '@fontsource/source-sans-pro';
+import '@fontsource/source-sans-pro/300.css';
+import '@fontsource/source-sans-pro/400.css';
+import '@fontsource/source-sans-pro/600.css';
+import '@fontsource/source-sans-pro/700.css';
+import '@fontsource/source-sans-pro/900.css';
+
 import './styles/index.css';
 
 import Viewport from './pages/Viewport.jsx';

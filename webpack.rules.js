@@ -30,9 +30,5 @@ module.exports = [
 		use: {
 			loader: 'babel-loader'
 		}
-	},
-	{
-		test: /\.(ttf|otf|eot|svg|woff2|woff)$/,
-		type: 'asset/resource'
 	}
 ];
