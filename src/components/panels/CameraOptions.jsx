@@ -32,10 +32,12 @@ export default class cameraOptions extends React.Component {
 		});
 
 		window.addEventListener('optionsUpdated', (event) => {
-			this.setState({
-				mediaDevice: globals.options.mediaDevice,
-				mediaDevices: globals.options.mediaDevices
-			});
+			setTimeout(() => {
+				this.setState({
+					mediaDevice: globals.options.mediaDevice,
+					mediaDevices: globals.options.mediaDevices
+				});
+			}, 100);
 		});
 	};
 
