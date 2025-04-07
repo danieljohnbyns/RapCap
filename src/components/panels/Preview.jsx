@@ -24,7 +24,6 @@ export default class Preview extends React.Component {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		for (const frame of globals.options.frames) {
 			if (!frame.buffer) continue;
-			console.log(frame);
 			const image = new Image();
 			image.crossOrigin = 'anonymous';
 			image.src = frame.buffer;
