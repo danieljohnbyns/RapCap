@@ -141,7 +141,7 @@ export default class Camera extends React.Component {
 				left: `${(canvasWidth - borderWidth) / 2}px`,
 				backgroundColor: 'transparent',
 				border: `solid ${0.25 / scale}rem var(--color-light)`,
-				boxShadow: `0 0 ${0.25 / scale}rem var(--color-dark)`,
+				boxShadow: `0 0 ${0.5 / scale}rem var(--color-dark)`,
 				position: 'absolute',
 				pointerEvents: 'none'
 			};
