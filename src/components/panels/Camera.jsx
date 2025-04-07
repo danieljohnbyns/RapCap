@@ -6,7 +6,8 @@ import {
 } from '@ant-design/icons';
 import {
 	Button,
-	Select
+	Select,
+	Row, Col
 } from 'antd';
 
 import globals from '../../utils/globals.js';
@@ -223,59 +224,71 @@ export default class Camera extends React.Component {
 				</div>
 
 				<div id='cameraControls'>
-					<Button
-						type='primary'
-						icon={<CameraOutlined />}
-						disabled={this.state.currentCountdown > 0}
-						onClick={async () => {
-							this.setState({
-								currentCountdown: globals.options.countdown
-							});
-							for (let i = globals.options.countdown; i > 0; i--) {
-								this.setState({
-									currentCountdown: i
-								});
-								await new Promise((resolve) => setTimeout(resolve, 1000));
-							};
-							this.shoot();
-							this.setState({
-								currentCountdown: 0
-							});
-						}}
+					<Row
+						style={{ width: '100%', alignItems: 'center' }}
 					>
-						Shoot
-					</Button>
-					<Select
-						id='countdown'
-						defaultValue={globals.options.countdown}
-						value={this.state.countdown}
-						placeholder='Countdown'
-						options={[
-							{
-								value: 0,
-								label: 'Instant'
-							},
-							{
-								value: 3,
-								label: '3 Seconds'
-							},
-							{
-								value: 5,
-								label: '5 Seconds'
-							}
-						]}
-						variant='outlined'
-						suffixIcon={<DownOutlined />}
+						<Col span={17}>
+							<Button
+								type='primary'
+								icon={<CameraOutlined />}
+								disabled={this.state.currentCountdown > 0}
+								onClick={async () => {
+									this.setState({
+										currentCountdown: globals.options.countdown
+									});
+									for (let i = globals.options.countdown; i > 0; i--) {
+										this.setState({
+											currentCountdown: i
+										});
+										await new Promise((resolve) => setTimeout(resolve, 1000));
+									};
+									this.shoot();
+									this.setState({
+										currentCountdown: 0
+									});
+								}}
+							>
+								Shoot
+							</Button>
+						</Col>
 
-						onChange={(value) => {
-							globals.setOptions({
-								countdown: value
-							});
-							this.setState({
-								countdown: value
-							});
-						}}
-					/>
+						<Col span={1} />
+
+						<Col span={6}>
+							<Select
+								id='countdown'
+								defaultValue={globals.options.countdown}
+								value={this.state.countdown}
+								style={{ width: '100%' }}
+								placeholder='Countdown'
+								options={[
+									{
+										value: 0,
+										label: 'Instant'
+									},
+									{
+										value: 3,
+										label: '3 Seconds'
+									},
+									{
+										value: 5,
+										label: '5 Seconds'
+									}
+								]}
+								variant='outlined'
+								suffixIcon={<DownOutlined />}
+
+								onChange={(value) => {
+									globals.setOptions({
+										countdown: value
+									});
+									this.setState({
+										countdown: value
+									});
+								}}
+							/>
+						</Col>
+					</Row>
 				</div>
 			</>
 		);
