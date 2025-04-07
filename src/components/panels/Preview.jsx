@@ -139,6 +139,8 @@ export default class Preview extends React.Component {
 	};
 
 	async componentDidMount() {
+		if (globals.mounted.includes('preview')) return;
+
 		this.canvas = this.canvasRef.current;
 		this.context = this.canvas.getContext('2d');
 
@@ -174,6 +176,8 @@ export default class Preview extends React.Component {
 
 			this.renderCanvas();
 		});
+
+		globals.mounted.push('preview');
 	};
 
 	render() {

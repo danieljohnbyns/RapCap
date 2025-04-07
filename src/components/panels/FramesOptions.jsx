@@ -25,6 +25,8 @@ export default class FramesOptions extends React.Component {
 	};
 
 	componentDidMount() {
+		if (globals.mounted.includes('framesOptions')) return;
+
 		this.setState({
 			frameCount: globals.options.frames.length,
 			frames: globals.options.frames
@@ -36,6 +38,8 @@ export default class FramesOptions extends React.Component {
 				frames: globals.options.frames
 			});
 		});
+
+		globals.mounted.push('framesOptions');
 	};
 
 	render() {

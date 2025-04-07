@@ -11,6 +11,8 @@ import CameraOptions from '../components/panels/CameraOptions.jsx';
 import FramesOptions from '../components/panels/FramesOptions.jsx';
 import OutputOptions from '../components/panels/OutputOptions.jsx';
 
+import globals from '../utils/globals.js';
+
 export default class Viewport extends React.Component {
 	constructor(props) {
 		super(props);
@@ -24,6 +26,8 @@ export default class Viewport extends React.Component {
 	};
 
 	componentDidMount() {
+		if (globals.mounted.includes('viewport')) return;
+
 		if (this.state.container) {
 			this.state.swapy = createSwapy(this.state.container, {
 				animation: 'dynamic'
@@ -55,6 +59,8 @@ export default class Viewport extends React.Component {
 				};
 			});
 		};
+
+		globals.mounted.push('viewport');
 	};
 	componentWillUnmount() {
 		this.state.swapy?.destroy();
