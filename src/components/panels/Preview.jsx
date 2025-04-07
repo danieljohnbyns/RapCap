@@ -18,39 +18,35 @@ export default class Preview extends React.Component {
 		this.canvas = null;
 		this.context = null;
 		this.imageTemplate = null;
+		this.snapshots = [];
 	};
 
 	drawSnapshots = async () => {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		for (const frame of globals.options.frames) {
-			if (!frame.buffer) continue;
-			const image = new Image();
-			image.crossOrigin = 'anonymous';
-			image.src = frame.buffer;
-			await new Promise((resolve) => {
-				image.onload = () => {
-					this.context.save();
-					this.context.beginPath();
-					this.context.rect(frame.position.x, frame.position.y, frame.size.width, frame.size.height);
-					this.context.clip();
+		for (let i = 0; i < this.snapshots.length; i++) {
+			const snapshot = this.snapshots[i];
+			const frame = globals.options.frames[i];
+			if (!snapshot) continue;
 
-					// Calculate scaling to fit the buffer into the frame
-					const scaleX = frame.size.width / image.width;
-					const scaleY = frame.size.height / image.height;
-					const scale = Math.max(scaleX, scaleY); // Fill the frame while clipping overflow
+			this.context.save();
+			this.context.beginPath();
+			this.context.rect(frame.position.x, frame.position.y, frame.size.width, frame.size.height);
+			this.context.clip();
 
-					const scaledWidth = image.width * scale;
-					const scaledHeight = image.height * scale;
+			// Calculate scaling to fit the buffer into the frame
+			const scaleX = frame.size.width / snapshot.width;
+			const scaleY = frame.size.height / snapshot.height;
+			const scale = Math.max(scaleX, scaleY); // Fill the frame while clipping overflow
 
-					// Center the image within the frame
-					const offsetX = frame.position.x + (frame.size.width - scaledWidth) / 2;
-					const offsetY = frame.position.y + (frame.size.height - scaledHeight) / 2;
+			const scaledWidth = snapshot.width * scale;
+			const scaledHeight = snapshot.height * scale;
 
-					this.context.drawImage(image, offsetX, offsetY, scaledWidth, scaledHeight);
-					this.context.restore();
-					resolve();
-				};
-			});
+			// Center the image within the frame
+			const offsetX = frame.position.x + (frame.size.width - scaledWidth) / 2;
+			const offsetY = frame.position.y + (frame.size.height - scaledHeight) / 2;
+
+			this.context.drawImage(snapshot, offsetX, offsetY, scaledWidth, scaledHeight);
+			this.context.restore();
 		};
 	};
 
@@ -131,10 +127,35 @@ export default class Preview extends React.Component {
 	renderCanvas = async () => {
 		this.canvas.width = this.imageTemplate.width;
 		this.canvas.height = this.imageTemplate.height;
+
 		await this.drawSnapshots();
 		this.drawImageTemplate();
 		this.drawFrames();
 		this.resizeCanvas();
+
+		this.snapshots = await (async () => {
+			const snapshots = [];
+			for (const frame of globals.options.frames) {
+				if (!frame.buffer) {
+					snapshots.push(null);
+					continue;
+				};
+				const image = new Image();
+				image.crossOrigin = 'anonymous';
+				image.src = frame.buffer;
+				await new Promise((resolve) => {
+					image.onload = () => {
+						snapshots.push(image);
+						resolve();
+					};
+				});
+			};
+			return snapshots;
+		})();
+
+		requestAnimationFrame(() => {
+			this.renderCanvas();
+		});
 	};
 
 	async componentDidMount() {
@@ -150,11 +171,6 @@ export default class Preview extends React.Component {
 				resolve();
 			};
 		});
-		this.renderCanvas();
-
-		window.addEventListener('optionsUpdated', this.renderCanvas);
-		window.addEventListener('resize', this.renderCanvas);
-		window.addEventListener('swapy-swap', this.renderCanvas);
 
 		window.addEventListener('import-image-template', async (event) => {
 			const dialog = await window.api.openImageDialog();
@@ -170,9 +186,9 @@ export default class Preview extends React.Component {
 				};
 			});
 			globals.setOptions({ imageTemplate: dialog });
-
-			this.renderCanvas();
 		});
+
+		this.renderCanvas();
 	};
 
 	render() {
