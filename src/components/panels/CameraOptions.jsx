@@ -2,14 +2,10 @@ import React from 'react';
 
 
 import {
-	DownOutlined,
-	WarningOutlined
+	DownOutlined
 } from '@ant-design/icons';
 import {
 	Select,
-	Slider,
-	Switch,
-	Popover,
 	Row, Col,
 } from 'antd';
 
@@ -68,6 +64,18 @@ export default class cameraOptions extends React.Component {
 									key: device.deviceId
 								};
 							})}
+							optionRender={(option) => {
+								return (
+									<div style={{
+										position: 'relative',
+										height: '100%',
+										display: 'flex',
+										alignItems: 'center'
+									}}>
+										{option.label}
+									</div>
+								);
+							}}
 							onChange={(value) => {
 								globals.options.mediaDevice = this.state.mediaDevices.find((device) => device.deviceId === value);
 								this.setState({

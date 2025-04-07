@@ -2,6 +2,7 @@ import React from 'react';
 
 import {
 	CameraOutlined,
+	ClockCircleOutlined,
 	DownOutlined
 } from '@ant-design/icons';
 import {
@@ -279,9 +280,20 @@ export default class Camera extends React.Component {
 										label: '5 Seconds'
 									}
 								]}
+								optionRender={(option) => {
+									return (
+										<div style={{
+											position: 'relative',
+											height: '100%',
+											display: 'flex',
+											alignItems: 'center'
+										}}>
+											{option.label}
+										</div>
+									);
+								}}
 								variant='outlined'
-								suffixIcon={<DownOutlined />}
-
+								menuItemSelectedIcon={<ClockCircleOutlined />}
 								onChange={(value) => {
 									globals.setOptions({
 										countdown: value

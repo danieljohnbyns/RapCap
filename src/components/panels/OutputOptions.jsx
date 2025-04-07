@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {
-	Input,
 	Select,
 	Row, Col,
 	Button
@@ -173,7 +172,6 @@ export default class OutputOptions extends React.Component {
 									scale: value
 								});
 							}}
-
 							options={[
 								{
 									value: 1,
@@ -192,6 +190,18 @@ export default class OutputOptions extends React.Component {
 									label: '4x'
 								}
 							]}
+							optionRender={(option) => {
+								return (
+									<div style={{
+										position: 'relative',
+										height: '100%',
+										display: 'flex',
+										alignItems: 'center'
+									}}>
+										{option.label}
+									</div>
+								);
+							}}
 							variant='outlined'
 						/>
 					</Col>

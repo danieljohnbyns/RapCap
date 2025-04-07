@@ -56,7 +56,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 					borderRadius: '1rem',
 					borderRadiusLG: '1rem',
 					borderRadiusSM: '1rem',
-					borderRadiusXS: '1rem',
+					borderRadiusXS: '1rem'
 				},
 				components: {
 					Button: {
