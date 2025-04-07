@@ -5,10 +5,11 @@ module.exports = {
 	packagerConfig: {
 		asar: true,
 		appBundleId: 'com.danieljohnbyns.rapcap',
+		appCategoryType: 'public.app-category.event-utilities',
 		protocols: [
 			{
 				name: 'RapCap',
-				schemes: ['rapcap'],
+				schemes: ['rapcap']
 			}
 		]
 	},
@@ -16,7 +17,13 @@ module.exports = {
 	makers: [
 		{
 			name: '@electron-forge/maker-squirrel',
-			config: {},
+			config: {
+				name: 'rapcap',
+				setupIcon: './src/assets/icons/icon.ico',
+				exe: 'rapcap.exe',
+				loadingGif: './assets/icons/loading.gif',
+				authors: 'Daniel John Baynosa'
+			}
 		},
 		{
 			name: '@electron-forge/maker-zip',
@@ -24,17 +31,28 @@ module.exports = {
 		},
 		{
 			name: '@electron-forge/maker-deb',
-			config: {},
+			config: {
+				maintainer: 'Daniel John Baynosa',
+				icon: './src/assets/icons/icon.png',
+				productName: 'RapCap',
+				exec: 'rapcap'
+			}
 		},
 		{
 			name: '@electron-forge/maker-rpm',
-			config: {},
+			config: {
+				maintainer: 'Daniel John Baynosa',
+				icon: './src/assets/icons/icon.png',
+				productName: 'RapCap',
+				exec: 'rapcap'
+			}
 		},
 	],
+	publishers: [],
 	plugins: [
 		{
 			name: '@electron-forge/plugin-auto-unpack-natives',
-			config: {},
+			config: {}
 		},
 		{
 			name: '@electron-forge/plugin-webpack',

@@ -8,6 +8,8 @@ if (require('electron-squirrel-startup')) {
 	app.quit();
 };
 
+const __dirname = path.resolve();
+
 const createWindow = () => {
 	const mainWindow = new BrowserWindow({
 		width: 800,
@@ -21,6 +23,9 @@ const createWindow = () => {
 			contextIsolation: true,
 			nodeIntegration: false
 		},
+
+		icon: path.join(__dirname, 'assets', 'icons', 'icon.ico'),
+
 		title: 'RapCap'
 	});
 
@@ -106,6 +111,9 @@ const createWindow = () => {
 	];
 	const menu = Menu.buildFromTemplate(mainMenuTemplate);
 	Menu.setApplicationMenu(menu);
+
+	const icon = path.join(__dirname, 'assets', 'icons', 'icon.ico');
+	mainWindow.setIcon(icon);
 };
 
 ipcMain.handle('open-image-dialog', async () => {

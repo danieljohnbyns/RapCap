@@ -2,7 +2,7 @@
   "name": "rapcap",
   "productName": "rapcap",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Photobooth software for events",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
