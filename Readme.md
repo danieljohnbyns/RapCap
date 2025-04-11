@@ -1,6 +1,30 @@
 # RapCap
 Rapid Capture (RapCap), a photobooth software for events, parties, and gatherings.
 
+## Table of Contents
+- [RapCap](#rapcap)
+	- [Table of Contents](#table-of-contents)
+	- [Todo](#todo)
+	- [Known Issues](#known-issues)
+	- [Features](#features)
+	- [Installation](#installation)
+	- [Usage](#usage)
+
+## Todo
+- [ ] Improve UI/UX
+- [ ] Add more customization options
+- [ ] Implement photo editing tools
+- [ ] Add support for multiple cameras
+- [ ] Implement cloud storage options
+- [ ] Add social media sharing options
+- [ ] Add support for GIFs and videos
+- [ ] Add support for green screen for custom backgrounds
+- [ ] Add support for custom overlays
+
+## Known Issues
+- [ ] Some users may experience issues with camera detection on certain systems.
+- [ ] If the output image is saved saved on the directory with with the same name, it will be overwritten.
+
 ## Features
 - **Photo Capture**: Take high-quality photos with a simple click.
 - **Easy Setup**: Quick and easy installation process.
