@@ -114,6 +114,27 @@ const Viewport = () => {
 	// Image Template
 	const [imageTemplate, setImageTemplate] = React.useState(options.imageTemplate || 'https://picsum.photos/800/600');
 
+	// Open Template Event
+	window.addEventListener('import-image-template', (event) => {
+		// Open file dialog to select an image template
+		const input = document.createElement('input');
+		input.type = 'file';
+		input.accept = 'image/*';
+		input.addEventListener('change', (event) => {
+			const file = event.target.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					setImageTemplate(e.target.result);
+					setOptions({ imageTemplate: e.target.result });
+					location.reload(); // Reload to apply the new template
+				};
+				reader.readAsDataURL(file);
+			};
+		});
+		input.click();
+	});
+
 	const props = {
 		mediaDevices, setMediaDevices,
 		mediaDevice, setMediaDevice,

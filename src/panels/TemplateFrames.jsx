@@ -6,7 +6,8 @@ import {
 	Form,
 	Button,
 	Typography,
-	InputNumber
+	InputNumber,
+	Input
 } from 'antd';
 
 import {
@@ -22,7 +23,15 @@ const { Text } = Typography;
 
 import Panel from '../components/Panel.jsx';
 
-const TemplateFrames = ({ frameSettings, setFrameSettings }) => {
+const TemplateFrames = ({
+	mediaDevices, setMediaDevices,
+	mediaDevice, setMediaDevice,
+	resolution, setResolution,
+	videoSettings, setVideoSettings,
+	frameSettings, setFrameSettings,
+	imageTemplate, setImageTemplate,
+	stream, setStream
+}) => {
 	const setOptions = (newOptions) => {
 		globals.setOptions(newOptions);
 		globals.saveOptions();
@@ -39,6 +48,29 @@ const TemplateFrames = ({ frameSettings, setFrameSettings }) => {
 				}}
 			>
 				<Flex vertical gap={8} justify='flex-start' align='stretch'>
+					<Button
+						type='primary'
+						onClick={() => {
+							// Open file dialog to select an image template
+							const input = document.createElement('input');
+							input.type = 'file';
+							input.accept = 'image/*';
+							input.addEventListener('change', (event) => {
+								const file = event.target.files[0];
+								if (file) {
+									const reader = new FileReader();
+									reader.onload = (e) => {
+										setImageTemplate(e.target.result);
+										setOptions({ imageTemplate: e.target.result });
+										location.reload(); // Reload to apply the new template
+									};
+									reader.readAsDataURL(file);
+								};
+							});
+							input.click();
+						}}
+					>Select Template</Button>
+
 					<Form.List
 						name='frames'
 						initialValue={frameSettings.map(frame => ({

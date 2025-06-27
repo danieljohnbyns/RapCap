@@ -28,7 +28,20 @@ const Output = () => {
 				<Button
 					type='primary'
 					onClick={() => {
-						// Handle output generation
+						const previewCanvas = document.getElementById('previewCanvas');
+						if (!previewCanvas) {
+							alert('Preview canvas not found!');
+							return;
+						};
+
+						const outputFormat = options.output.format || 'png';
+						const outputScale = options.output.scale || 1;
+						const link = document.createElement('a');
+
+						const id = `rapcap-output-${Date.now()}`;
+						link.download = `${id}.${outputFormat}`;
+						link.href = previewCanvas.toDataURL(`image/${outputFormat}`, outputScale);
+						link.click();
 					}}
 				>
 					Export

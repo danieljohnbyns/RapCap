@@ -11,6 +11,8 @@ import {
 
 import Panel from '../components/Panel.jsx';
 
+import globals from '../utils/globals.js';
+
 const Preview = ({
 	mediaDevices, setMediaDevices,
 	mediaDevice, setMediaDevice,
@@ -21,6 +23,14 @@ const Preview = ({
 	stream, setStream
 }) => {
 	const [templateLoaded, setTemplateLoaded] = React.useState(false);
+
+	const options = globals.options;
+
+	const setOptions = (newOptions) => {
+		globals.setOptions(newOptions);
+		globals.saveOptions();
+	};
+
 	// Convert the image template URL to a Blob URL for preview
 	React.useEffect(() => {
 		const canvas = document.getElementById('previewCanvas');
@@ -43,8 +53,63 @@ const Preview = ({
 			underlayDiv.width = img.width;
 			underlayDiv.height = img.height;
 
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.drawImage(img, 0, 0);
+			const draw = () => {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				for (const frame of frameSettings) {
+					if (!frame.buffer) continue;
+					const image = new Image();
+					image.src = frame.buffer;
+
+					// Calculate aspect ratios
+					const imageAspect = image.width / image.height;
+					const frameAspect = frame.size.width / frame.size.height;
+
+					let drawWidth = frame.size.width;
+					let drawHeight = frame.size.height;
+					let offsetX = 0;
+					let offsetY = 0;
+
+					if (imageAspect > frameAspect) {
+						// Image is wider - fit by height
+						drawHeight = frame.size.height;
+						drawWidth = drawHeight * imageAspect;
+						offsetX = (frame.size.width - drawWidth) / 2;
+					} else {
+						// Image is taller - fit by width
+						drawWidth = frame.size.width;
+						drawHeight = drawWidth / imageAspect;
+						offsetY = (frame.size.height - drawHeight) / 2;
+					};
+
+					// Add clipping region
+					ctx.save();
+					ctx.beginPath();
+					ctx.rect(
+						frame.position.x,
+						frame.position.y,
+						frame.size.width,
+						frame.size.height
+					);
+					ctx.clip();
+					// Draw with calculated dimensions
+					ctx.drawImage(
+						image,
+						frame.position.x + offsetX,
+						frame.position.y + offsetY,
+						drawWidth,
+						drawHeight
+					);
+
+					// Remove clipping
+					ctx.restore();
+				};
+
+				ctx.drawImage(img, 0, 0);
+
+				setTimeout(draw, 1000 / 30); // Redraw at 30 FPS
+			};
+			draw();
 
 			setTemplateLoaded(true);
 		};
@@ -54,7 +119,7 @@ const Preview = ({
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.fillText('Failed to load image template', 10, 50);
 		};
-	}, [imageTemplate]);
+	}, [imageTemplate, frameSettings]);
 
 	// Draw frames on the overlay canvas
 	React.useEffect(() => {
@@ -89,7 +154,7 @@ const Preview = ({
 
 		ctx.clearRect(0, 0, underlayDiv.width, underlayDiv.height);
 
-		const availableFrame = frameSettings.filter(frame => !frame.buffer)[0];
+		const availableFrame = frameSettings.find(frame => frame.buffer === null);
 		if (!availableFrame) return;
 
 		const drawFrame = () => {
@@ -165,7 +230,13 @@ const Preview = ({
 						danger
 						icon={<ClearOutlined />}
 						onClick={() => {
-							alert('Clear button clicked!');
+							for (const frame of frameSettings) {
+								frame.buffer = null;
+							};
+							setFrameSettings([...frameSettings]);
+							setOptions({
+								frames: frameSettings
+							});
 						}}
 					>
 						Clear
