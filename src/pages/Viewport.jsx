@@ -67,7 +67,7 @@ const Viewport = () => {
 	const [mediaDevice, setMediaDevice] = React.useState(options.mediaDevice || []);
 	const [mediaDevices, setMediaDevices] = React.useState(options.mediaDevices || []);
 
-	// Get media devices on mount
+	// Media devices
 	React.useEffect(() => {
 		navigator.mediaDevices.enumerateDevices()
 			.then((devices) => {
@@ -106,21 +106,29 @@ const Viewport = () => {
 		});
 	}, [frameSettings]);
 
-	const panelProps = {
-		mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
-		resolution, setResolution,
-		frameSettings, setFrameSettings, 
-	};
+
+
+	// Image Template
+	const [imageTemplate, setImageTemplate] = React.useState(options.imageTemplate || 'https://picsum.photos/800/600');
 
 	return (
 		<Card id='viewport-card' size='small' ref={container}>
-			<Camera {...panelProps} />
+			<Camera {...{
+				mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
+				resolution, setResolution
+			}} />
 
-			<Preview {...panelProps} />
+			<Preview {...{
+				imageTemplate, setImageTemplate,
+				frameSettings, setFrameSettings
+			}} />
 
-			<CameraSettings {...panelProps} />
+			<CameraSettings {...{
+				mediaDevices, setMediaDevices,
+				mediaDevice, setMediaDevice
+			}} />
 
-			<TemplateFrames {...panelProps} />
+			<TemplateFrames {...{ frameSettings, setFrameSettings }} />
 
 			<Output />
 		</Card>

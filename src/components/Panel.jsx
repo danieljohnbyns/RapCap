@@ -45,7 +45,7 @@ const Panel = ({
 					)}
 				</Card>
 				<Card size='small' className='panel-body scrollable-content'>
-					<Flex vertical justify='flex-start' align='stretch' gap={8}>
+					<Flex vertical justify='flex-start' align='stretch' gap={8} style={{ width: '100%', height: '100%' }}>
 						{children}
 					</Flex>
 				</Card>

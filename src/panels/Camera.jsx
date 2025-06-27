@@ -121,7 +121,11 @@ const Camera = ({
 				</>
 			)}
 		>
-			<div style={{ width: '100%', height: '100%', display: 'flex', justify: 'center', alignItems: 'center' }}>
+			<div style={{
+				position: 'absolute',
+				top: 0, left: 0, width: '100%', height: '100%',
+				display: 'flex', justifyContent: 'center', alignItems: 'center'
+			}}>
 				<canvas id='cameraCanvas' style={{ display: 'none' }} />
 				<video id='cameraVideo' style={{ maxWidth: '100%', maxHeight: '100%' }} />
 			</div>

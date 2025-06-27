@@ -12,7 +12,10 @@ import globals from '../utils/globals.js';
 
 import Panel from '../components/Panel.jsx';
 
-const CameraSettings = ({ mediaDevices, setMediaDevices, mediaDevice, setMediaDevice }) => {
+const CameraSettings = ({
+	mediaDevices, setMediaDevices,
+	mediaDevice, setMediaDevice
+}) => {
 	const options = globals.options;
 	const [faceDetectionEnabled, setFaceDetectionEnabled] = React.useState(options.faceDetection);
 
