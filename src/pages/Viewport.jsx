@@ -135,6 +135,12 @@ const Viewport = () => {
 		input.click();
 	});
 
+	// Reset Options Event
+	window.addEventListener('reset-options', () => {
+		localStorage.clear();
+		location.reload();
+	});
+
 	const props = {
 		mediaDevices, setMediaDevices,
 		mediaDevice, setMediaDevice,

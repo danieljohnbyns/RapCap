@@ -50,6 +50,13 @@ const createWindow = () => {
 					}
 				},
 				{
+					label: 'Reset',
+					accelerator: 'CommandOrControl+Alt+R',
+					click() {
+						mainWindow.webContents.send('reset-options');
+					}
+				},
+				{
 					label: 'Quit',
 					accelerator: 'CommandOrControl+Q',
 					click() {

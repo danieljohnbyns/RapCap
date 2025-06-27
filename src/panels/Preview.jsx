@@ -237,6 +237,7 @@ const Preview = ({
 							setOptions({
 								frames: frameSettings
 							});
+							location.reload(); // Reload to clear the preview
 						}}
 					>
 						Clear
