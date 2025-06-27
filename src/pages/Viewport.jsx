@@ -140,11 +140,25 @@ const Viewport = () => {
 				<Form
 					layout='vertical'
 					initialValues={{
+						mediaDevice: options.mediaDevice,
 						brightness: options.brightness,
 						contrast: options.contrast,
 						faceDetection: options.faceDetection
 					}}
 				>
+					<Form.Item
+						label='Media Device'
+						name='mediaDevice'
+					>
+						<Select>
+							{options.mediaDevices.map((device) => (
+								<Select.Option key={device.deviceId} value={device.deviceId}>
+									{device.label || `Device ${device.deviceId}`}
+								</Select.Option>
+							))}
+						</Select>
+					</Form.Item>
+
 					<Form.Item
 						label='Brightness'
 						name='brightness'
