@@ -1,4 +1,5 @@
 import React from 'react';
+import { createSwapy } from 'swapy';
 
 import {
 	Flex,
@@ -43,8 +44,52 @@ const Viewport = () => {
 		globals.saveOptions();
 	};
 
+	const container = React.useRef(null);
+	const [swapy, setSwapy] = React.useState(null);
+
+	React.useEffect(() => {
+		if (container.current) {
+			console.log(container.current.querySelector('.ant-card-body').textContent);
+			
+			const newSwapy = createSwapy(container.current.querySelector('.ant-card-body'), {
+				animation: 'dynamic'
+			});
+			setSwapy(newSwapy);
+		}
+	}, [container]);
+
+	React.useEffect(() => {
+		if (swapy) {
+			swapy.onSwap((event) => {
+				window.dispatchEvent(new CustomEvent('swapy-swap', {
+					detail: {
+						fromSlot: event.fromSlot,
+						toSlot: event.toSlot
+					}
+				}));
+			});
+			swapy.onBeforeSwap((event) => {
+				const toBeRemovedElement = Array.from(document.getElementsByClassName('swapy-destination'));
+				for (const element of toBeRemovedElement) {
+					element.classList.remove('swapy-destination');
+				};
+
+				const destinationElement = document.getElementById(event.toSlot);
+				destinationElement.classList.add('swapy-destination');
+
+				return true;
+			});
+			swapy.onSwapEnd((event) => {
+				const toBeRemovedElement = Array.from(document.getElementsByClassName('swapy-destination'));
+				for (const element of toBeRemovedElement) {
+					element.classList.remove('swapy-destination');
+				};
+			});
+		};
+	}, [swapy]);
+
 	return (
-		<Card id='viewport-card' size='small'>
+		<Card id='viewport-card' size='small' ref={container}>
 			<Panel
 				title='Camera'
 				actions={(

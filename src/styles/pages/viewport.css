@@ -19,18 +19,18 @@
 	overflow: hidden;
 }
 
-#viewport-card > .ant-card-body > .panel:nth-child(1) {
+#viewport-card > .ant-card-body > div:nth-child(1) {
 	grid-area: a;
 }
-#viewport-card > .ant-card-body > .panel:nth-child(2) {
+#viewport-card > .ant-card-body > div:nth-child(2) {
 	grid-area: b;
 }
-#viewport-card > .ant-card-body > .panel:nth-child(3) {
+#viewport-card > .ant-card-body > div:nth-child(3) {
 	grid-area: c;
 }
-#viewport-card > .ant-card-body > .panel:nth-child(4) {
+#viewport-card > .ant-card-body > div:nth-child(4) {
 	grid-area: d;
 }
-#viewport-card > .ant-card-body > .panel:nth-child(5) {
+#viewport-card > .ant-card-body > div:nth-child(5) {
 	grid-area: e;
 }

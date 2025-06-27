@@ -22,43 +22,44 @@ import '../styles/components/panel.css';
 const Panel = ({
 	title = 'Panel',
 	children,
-	actions,
-	slot
+	actions
 }) => {
+	const id = 'panel-' + Math.random().toString(36).substring(2, 15);
 	return (
-		<Flex
-			id={slot}
-			vertical
-			className='panel'
-
-			data-swapy-slot={slot}
+		<div
+			data-swapy-slot={id}
 		>
-			<Card
-				size='small'
-				className='panel-header'
+			<Flex
+				id={id}
+				vertical
+				className='panel'
+				data-swapy-item={`item-${id}`}
 			>
-				{title && (
-					<Title level={5} style={{ textAlign: 'center' }}>{title}</Title>
-				)}
-			</Card>
-
-			<Card size='small' className='panel-body scrollable-content'>
-				<Flex vertical justify='flex-start' align='stretch' gap={8} style={{ height: '100%' }}>
-					{children}
-				</Flex>
-			</Card>
-
-			{actions &&
 				<Card
 					size='small'
-					className='panel-footer'
+					className='panel-header'
 				>
-					<Flex gap={8} justify='space-between' align='center'>
-						{actions}
+					{title && (
+						<Title level={5} style={{ textAlign: 'center' }}>{title}</Title>
+					)}
+				</Card>
+				<Card size='small' className='panel-body scrollable-content'>
+					<Flex vertical justify='flex-start' align='stretch' gap={8} style={{ height: '100%' }}>
+						{children}
 					</Flex>
 				</Card>
-			}
-		</Flex>
+				{actions &&
+					<Card
+						size='small'
+						className='panel-footer'
+					>
+						<Flex gap={8} justify='space-between' align='center'>
+							{actions}
+						</Flex>
+					</Card>
+				}
+			</Flex>
+		</div>
 	);
 };
 
