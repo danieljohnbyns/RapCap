@@ -19,12 +19,47 @@ import globals from '../utils/globals.js';
 
 import Panel from '../components/Panel.jsx';
 
-const Camera = () => {
+const Camera = ({ mediaDevices, setMediaDevices, mediaDevice, setMediaDevice }) => {
 	const options = globals.options;
 	const setOptions = (newOptions) => {
 		globals.setOptions(newOptions);
 		globals.saveOptions();
 	};
+
+	React.useEffect(() => {
+		const canvas = document.getElementById('cameraCanvas');
+		if (!canvas) return;
+		const ctx = canvas.getContext('2d');
+		canvas.width = 640; // Set canvas width
+		canvas.height = 480; // Set canvas height
+		const video = document.createElement('video');
+		video.width = canvas.width;
+		video.height = canvas.height;
+
+		const constraints = {
+			video: {
+				deviceId: mediaDevice ? { exact: mediaDevice } : undefined,
+				width: { ideal: 640 },
+				height: { ideal: 480 }
+			}
+		};
+		navigator.mediaDevices.getUserMedia(constraints)
+			.then((stream) => {
+				video.srcObject = stream;
+				video.play();
+			})
+			.catch((error) => {
+				console.error('Error accessing media devices:', error);
+			});
+		const draw = () => {
+			if (video.readyState === video.HAVE_ENOUGH_DATA) {
+				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+			}
+			requestAnimationFrame(draw);
+		}
+		draw();
+	}, [mediaDevice, mediaDevices]);
+
 	return (
 		<Panel
 			title='Camera'
@@ -70,13 +105,9 @@ const Camera = () => {
 				</>
 			)}
 		>
-			<Image
-				style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-				src='https://picsum.photos/800/600'
-				alt='Camera View'
-				fallback='https://picsum.photos/800/600?grayscale'
-				preview={false}
-			/>
+			<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+				<canvas id='cameraCanvas' style={{ width: '100%', height: 'auto', borderRadius: '8px', marginBottom: '16px' }} />
+			</div>
 		</Panel>
 	);
 };

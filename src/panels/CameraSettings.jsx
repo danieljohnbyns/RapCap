@@ -12,7 +12,7 @@ import globals from '../utils/globals.js';
 
 import Panel from '../components/Panel.jsx';
 
-const CameraSettings = () => {
+const CameraSettings = ({ mediaDevices, setMediaDevices, mediaDevice, setMediaDevice }) => {
 	const options = globals.options;
 	const [faceDetectionEnabled, setFaceDetectionEnabled] = React.useState(options.faceDetection);
 
@@ -28,7 +28,7 @@ const CameraSettings = () => {
 			<Form
 				layout='vertical'
 				initialValues={{
-					mediaDevice: options.mediaDevice,
+					mediaDevice: mediaDevice,
 					brightness: options.brightness,
 					contrast: options.contrast,
 					faceDetection: options.faceDetection
@@ -38,8 +38,16 @@ const CameraSettings = () => {
 					label='Media Device'
 					name='mediaDevice'
 				>
-					<Select>
-						{options.mediaDevices.map((device) => (
+					<Select
+						value={mediaDevice}
+						onChange={(value) => {
+							setMediaDevice(value);
+							setOptions({
+								mediaDevice: value
+							});
+						}}
+					>
+						{mediaDevices?.map((device) => (
 							<Select.Option key={device.deviceId} value={device.deviceId}>
 								{device.label || `Device ${device.deviceId}`}
 							</Select.Option>

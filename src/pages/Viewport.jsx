@@ -2,32 +2,13 @@ import React from 'react';
 import { createSwapy } from 'swapy';
 
 import {
-	Flex,
-	Card,
-	Slider,
-	Switch,
-	Select,
-	Form,
-	Button,
-	Typography,
-	Divider,
-	InputNumber,
+	Card
 } from 'antd';
-
-import {
-	PlusOutlined,
-	MinusOutlined,
-	UpOutlined,
-	DownOutlined
-} from '@ant-design/icons';
 
 import '../styles/pages/viewport.css';
 
 import globals from '../utils/globals.js';
 
-const { Title, Text } = Typography;
-
-import Panel from '../components/Panel.jsx';
 import Camera from '../panels/Camera.jsx';
 import Preview from '../panels/Preview.jsx';
 import CameraSettings from '../panels/CameraSettings.jsx';
@@ -35,15 +16,6 @@ import TemplateFrames from '../panels/TemplateFrames.jsx';
 import Output from '../panels/Output.jsx';
 
 const Viewport = () => {
-	const options = globals.options;
-	const [faceDetectionEnabled, setFaceDetectionEnabled] = React.useState(options.faceDetection);
-	const [frameSettings, setFrameSettings] = React.useState(options.frames);
-
-	const setOptions = (newOptions) => {
-		globals.setOptions(newOptions);
-		globals.saveOptions();
-	};
-
 	const container = React.useRef(null);
 	const [swapy, setSwapy] = React.useState(null);
 
@@ -86,15 +58,44 @@ const Viewport = () => {
 		};
 	}, [swapy]);
 
+	const options = globals.options;
+	const setOptions = (newOptions) => {
+		globals.setOptions(newOptions);
+		globals.saveOptions();
+	};
+
+	const [mediaDevice, setMediaDevice] = React.useState(options.mediaDevice || []);
+	const [mediaDevices, setMediaDevices] = React.useState(options.mediaDevices || []);
+
+	// Get media devices on mount
+	React.useEffect(() => {
+		navigator.mediaDevices.enumerateDevices()
+			.then((devices) => {
+				const videoDevices = devices.filter(device => device.kind === 'videoinput');
+				setMediaDevices(videoDevices);
+				console.log('Available video devices:', videoDevices);
+
+				if (videoDevices.length > 0 && !mediaDevice) {
+					setMediaDevice(videoDevices[0]);
+					setOptions({ mediaDevice: videoDevices[0] });
+				};
+			})
+			.catch((error) => {
+				console.error('Error accessing media devices:', error);
+			});
+	}, []);
+
+	const panelProps = { mediaDevices, setMediaDevices, mediaDevice, setMediaDevice };
+
 	return (
 		<Card id='viewport-card' size='small' ref={container}>
-			<Camera />
+			<Camera {...panelProps} />
 
-			<Preview />
+			<Preview {...panelProps} />
 
-			<CameraSettings />
+			<CameraSettings {...panelProps} />
 
-			<TemplateFrames />
+			<TemplateFrames {...panelProps} />
 
 			<Output />
 		</Card>
