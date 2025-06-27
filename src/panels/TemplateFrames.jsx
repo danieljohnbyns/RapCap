@@ -22,10 +22,7 @@ const { Text } = Typography;
 
 import Panel from '../components/Panel.jsx';
 
-const TemplateFrames = () => {
-	const options = globals.options;
-	const [frameSettings, setFrameSettings] = React.useState(options.frames);
-
+const TemplateFrames = ({ frameSettings, setFrameSettings }) => {
 	const setOptions = (newOptions) => {
 		globals.setOptions(newOptions);
 		globals.saveOptions();

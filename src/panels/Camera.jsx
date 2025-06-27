@@ -19,7 +19,10 @@ import globals from '../utils/globals.js';
 
 import Panel from '../components/Panel.jsx';
 
-const Camera = ({ mediaDevices, setMediaDevices, mediaDevice, setMediaDevice }) => {
+const Camera = ({
+	mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
+	resolution, setResolution
+}) => {
 	const options = globals.options;
 	const setOptions = (newOptions) => {
 		globals.setOptions(newOptions);
@@ -28,36 +31,49 @@ const Camera = ({ mediaDevices, setMediaDevices, mediaDevice, setMediaDevice }) 
 
 	React.useEffect(() => {
 		const canvas = document.getElementById('cameraCanvas');
-		if (!canvas) return;
-		const ctx = canvas.getContext('2d');
-		canvas.width = 640; // Set canvas width
-		canvas.height = 480; // Set canvas height
-		const video = document.createElement('video');
-		video.width = canvas.width;
-		video.height = canvas.height;
+		const video = document.getElementById('cameraVideo');
 
-		const constraints = {
-			video: {
-				deviceId: mediaDevice ? { exact: mediaDevice } : undefined,
-				width: { ideal: 640 },
-				height: { ideal: 480 }
-			}
-		};
-		navigator.mediaDevices.getUserMedia(constraints)
-			.then((stream) => {
+		if (!canvas || !video) return;
+
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		const handleVideoStream = async () => {
+			try {
+				canvas.width = 0;
+				canvas.height = 0;
+
+				const stream = await navigator.mediaDevices.getUserMedia({
+					video: {
+						deviceId: mediaDevice ? { exact: mediaDevice } : undefined
+					}
+				});
 				video.srcObject = stream;
-				video.play();
-			})
-			.catch((error) => {
+
+				video.onloadedmetadata = () => {
+					const videoTrack = stream.getVideoTracks()[0];
+					const settings = videoTrack.getSettings();
+
+					canvas.width = settings.width;
+					canvas.height = settings.height;
+					console.log('Video settings:', settings);
+
+					video.play();
+					draw();
+				};
+			} catch (error) {
 				console.error('Error accessing media devices:', error);
-			});
+			};
+		};
+
+		handleVideoStream();
+
 		const draw = () => {
 			if (video.readyState === video.HAVE_ENOUGH_DATA) {
 				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-			}
+			};
 			requestAnimationFrame(draw);
-		}
-		draw();
+		};
 	}, [mediaDevice, mediaDevices]);
 
 	return (
@@ -105,8 +121,9 @@ const Camera = ({ mediaDevices, setMediaDevices, mediaDevice, setMediaDevice }) 
 				</>
 			)}
 		>
-			<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-				<canvas id='cameraCanvas' style={{ width: '100%', height: 'auto', borderRadius: '8px', marginBottom: '16px' }} />
+			<div style={{ width: '100%', height: '100%', display: 'flex', justify: 'center', alignItems: 'center' }}>
+				<canvas id='cameraCanvas' style={{ display: 'none' }} />
+				<video id='cameraVideo' style={{ maxWidth: '100%', maxHeight: '100%' }} />
 			</div>
 		</Panel>
 	);

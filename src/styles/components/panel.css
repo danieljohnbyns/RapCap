@@ -14,11 +14,20 @@
 	border-top-right-radius: 0;
 }
 
-.panel .panel-header > .ant-card-body,
+.panel .panel-header > .ant-card-body {
+	padding: 0.2rem 1.2rem;
+}
 .panel .panel-footer > .ant-card-body {
 	padding: 1.2rem;
 }
 
 .panel .panel-body:has(~ .panel-footer){
 	border-radius: 0;
+}
+
+.panel .panel-body > .ant-card-body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: stretch;
 }

@@ -85,7 +85,32 @@ const Viewport = () => {
 			});
 	}, []);
 
-	const panelProps = { mediaDevices, setMediaDevices, mediaDevice, setMediaDevice };
+	const [frameSettings, setFrameSettings] = React.useState(options.frames || [
+		{
+			size: {
+				width: 360,
+				height: 200
+			},
+			position: {
+				x: 40,
+				y: 60
+			},
+			buffer: null
+		}
+	]);
+	const [resolution, setResolution] = React.useState();
+	React.useEffect(() => {
+		setResolution({
+			width: frameSettings[0]?.size?.width || 640,
+			height: frameSettings[0]?.size?.height || 480
+		});
+	}, [frameSettings]);
+
+	const panelProps = {
+		mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
+		resolution, setResolution,
+		frameSettings, setFrameSettings, 
+	};
 
 	return (
 		<Card id='viewport-card' size='small' ref={container}>

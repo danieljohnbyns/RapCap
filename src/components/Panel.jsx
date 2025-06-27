@@ -38,13 +38,14 @@ const Panel = ({
 				<Card
 					size='small'
 					className='panel-header'
+					data-swapy-handle
 				>
 					{title && (
 						<Title level={5} style={{ textAlign: 'center' }}>{title}</Title>
 					)}
 				</Card>
 				<Card size='small' className='panel-body scrollable-content'>
-					<Flex vertical justify='flex-start' align='stretch' gap={8} style={{ height: '100%' }}>
+					<Flex vertical justify='flex-start' align='stretch' gap={8}>
 						{children}
 					</Flex>
 				</Card>
