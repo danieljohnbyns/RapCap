@@ -114,28 +114,24 @@ const Viewport = () => {
 	// Image Template
 	const [imageTemplate, setImageTemplate] = React.useState(options.imageTemplate || 'https://picsum.photos/800/600');
 
+	const props = {
+		mediaDevices, setMediaDevices,
+		mediaDevice, setMediaDevice,
+		resolution, setResolution,
+		videoSettings, setVideoSettings,
+		frameSettings, setFrameSettings,
+		imageTemplate, setImageTemplate,
+		stream, setStream
+	};
 	return (
 		<Card id='viewport-card' size='small' ref={container}>
-			<Camera {...{
-				mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
-				resolution, setResolution,
-				videoSettings, setVideoSettings,
-				stream, setStream
-			}} />
+			<Camera {...props} />
 
-			<Preview {...{
-				imageTemplate, setImageTemplate,
-				frameSettings, setFrameSettings,
-				stream, setStream
-			}} />
+			<Preview {...props} />
 
-			<CameraSettings {...{
-				mediaDevices, setMediaDevices,
-				mediaDevice, setMediaDevice,
-				videoSettings, setVideoSettings
-			}} />
+			<CameraSettings {...props} />
 
-			<TemplateFrames {...{ frameSettings, setFrameSettings }} />
+			<TemplateFrames {...props} />
 
 			<Output />
 		</Card>

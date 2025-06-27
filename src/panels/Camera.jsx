@@ -22,7 +22,7 @@ const { Title, Text } = Typography;
 
 const Camera = ({
 	mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
-	resolution, setResolution,
+	frameSettings, setFrameSettings,
 	videoSettings, setFilterFunction,
 	stream, setStream
 }) => {
@@ -31,6 +31,7 @@ const Camera = ({
 		globals.setOptions(newOptions);
 		globals.saveOptions();
 	};
+	const [countdown, setCountdown] = React.useState(options.countdown || 0);
 
 	const videoSettingsRef = React.useRef(videoSettings);
 	React.useEffect(() => {
@@ -122,18 +123,30 @@ const Camera = ({
 						icon={<CameraOutlined />}
 						style={{ width: '100%' }}
 						onClick={() => {
-							let countdown = options.countdown || 0;
-							if (countdown > 0) {
-								setOverlayMessage(<Title level={1} style={{ color: 'white' }}>{countdown}</Title>);
+							let count = countdown || 0;
+							if (count > 0) {
+								setOverlayMessage(<Title level={1} style={{ color: 'white' }}>{count}</Title>);
 								const countdownInterval = setInterval(() => {
-									countdown -= 1;
-									if (countdown <= 0) {
+									count -= 1;
+									if (count <= 0) {
 										clearInterval(countdownInterval);
 										setOverlayMessage('');
-										// Trigger the camera capture logic here
-										console.log('Capture shot taken!');
+										const canvas = document.getElementById('cameraCanvas');
+										// Get the base64 image data from the canvas
+										const imageData = canvas.toDataURL('image/png');
+
+										// Save to the buffer of latest available frame
+										const availableFrame = frameSettings.find(frame => !frame.buffer);
+										if (availableFrame) {
+											availableFrame.buffer = imageData;
+											setFrameSettings([...frameSettings]);
+
+											setOptions({
+												frames: frameSettings
+											});
+										};
 									} else {
-										setOverlayMessage(<Title level={1} style={{ color: 'white' }}>{countdown}</Title>);
+										setOverlayMessage(<Title level={1} style={{ color: 'white' }}>{count}</Title>);
 									};
 								}, 1000);
 							};
@@ -144,7 +157,7 @@ const Camera = ({
 					<Form
 						layout='vertical'
 						initialValues={{
-							countdown: options.countdown
+							countdown: countdown
 						}}
 					>
 						<Form.Item
@@ -166,6 +179,7 @@ const Camera = ({
 									setOptions({
 										countdown: value
 									});
+									setCountdown(value);
 								}}
 							/>
 						</Form.Item>

@@ -12,8 +12,12 @@ import {
 import Panel from '../components/Panel.jsx';
 
 const Preview = ({
-	imageTemplate, setImageTemplate,
+	mediaDevices, setMediaDevices,
+	mediaDevice, setMediaDevice,
+	resolution, setResolution,
+	videoSettings, setVideoSettings,
 	frameSettings, setFrameSettings,
+	imageTemplate, setImageTemplate,
 	stream, setStream
 }) => {
 	const [templateLoaded, setTemplateLoaded] = React.useState(false);
@@ -78,7 +82,6 @@ const Preview = ({
 		const underlayDiv = document.getElementById('previewUnderlay');
 		const cameraCanvas = document.getElementById('cameraCanvas');
 		if (!underlayDiv || !cameraCanvas) return;
-		if (!underlayDiv || !stream) return;
 
 		const ctx = underlayDiv.getContext('2d');
 		const cameraCtx = cameraCanvas.getContext('2d');
@@ -124,13 +127,15 @@ const Preview = ({
 			ctx.clip();
 
 			// Draw with calculated dimensions
-			ctx.drawImage(
-				cameraCanvas,
-				availableFrame.position.x + offsetX,
-				availableFrame.position.y + offsetY,
-				drawWidth,
-				drawHeight
-			);
+			try {
+				ctx.drawImage(
+					cameraCanvas,
+					availableFrame.position.x + offsetX,
+					availableFrame.position.y + offsetY,
+					drawWidth,
+					drawHeight
+				);
+			} catch (error) { };
 
 			// Remove clipping
 			ctx.restore();
@@ -138,7 +143,7 @@ const Preview = ({
 			requestAnimationFrame(drawFrame);
 		};
 		drawFrame();
-	}, [frameSettings, stream]);
+	}, [frameSettings]);
 
 	return (
 		<Panel

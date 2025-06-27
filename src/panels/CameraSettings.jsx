@@ -15,7 +15,11 @@ import Panel from '../components/Panel.jsx';
 const CameraSettings = ({
 	mediaDevices, setMediaDevices,
 	mediaDevice, setMediaDevice,
-	videoSettings, setVideoSettings
+	resolution, setResolution,
+	videoSettings, setVideoSettings,
+	frameSettings, setFrameSettings,
+	imageTemplate, setImageTemplate,
+	stream, setStream
 }) => {
 	const options = globals.options;
 	const [faceDetectionEnabled, setFaceDetectionEnabled] = React.useState(options.faceDetection);
