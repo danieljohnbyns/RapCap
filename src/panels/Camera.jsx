@@ -3,7 +3,8 @@ import React from 'react';
 import {
 	Form,
 	Button,
-	Select
+	Select,
+	Typography
 } from 'antd';
 
 import {
@@ -17,10 +18,13 @@ import globals from '../utils/globals.js';
 
 import Panel from '../components/Panel.jsx';
 
+const { Title, Text } = Typography;
+
 const Camera = ({
 	mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
 	resolution, setResolution,
-	videoSettings, setFilterFunction
+	videoSettings, setFilterFunction,
+	stream, setStream
 }) => {
 	const options = globals.options;
 	const setOptions = (newOptions) => {
@@ -72,6 +76,8 @@ const Camera = ({
 
 					video.play();
 					draw();
+
+					setStream(video);
 				};
 			} catch (error) {
 				console.error('Error accessing media devices:', error);
@@ -99,10 +105,12 @@ const Camera = ({
 			clearTimeout(timeoutId);
 			if (stream) {
 				stream.getTracks().forEach(track => track.stop());
-			}
+			};
 			video.srcObject = null;
 		};
 	}, [mediaDevice, mediaDevices]);
+
+	const [overlayMessage, setOverlayMessage] = React.useState('');
 
 	return (
 		<Panel
@@ -114,7 +122,21 @@ const Camera = ({
 						icon={<CameraOutlined />}
 						style={{ width: '100%' }}
 						onClick={() => {
-							alert('Camera button clicked!');
+							let countdown = options.countdown || 0;
+							if (countdown > 0) {
+								setOverlayMessage(<Title level={1} style={{ color: 'white' }}>{countdown}</Title>);
+								const countdownInterval = setInterval(() => {
+									countdown -= 1;
+									if (countdown <= 0) {
+										clearInterval(countdownInterval);
+										setOverlayMessage('');
+										// Trigger the camera capture logic here
+										console.log('Capture shot taken!');
+									} else {
+										setOverlayMessage(<Title level={1} style={{ color: 'white' }}>{countdown}</Title>);
+									};
+								}, 1000);
+							};
 						}}
 					>
 						Shoot
@@ -135,7 +157,9 @@ const Camera = ({
 									{ value: 0, label: 'Instant' },
 									{ value: 1, label: '1 Second' },
 									{ value: 2, label: '2 Seconds' },
-									{ value: 3, label: '3 Seconds' }
+									{ value: 3, label: '3 Seconds' },
+									{ value: 5, label: '5 Seconds' },
+									{ value: 10, label: '10 Seconds' }
 								]}
 
 								onChange={(value) => {
@@ -154,6 +178,18 @@ const Camera = ({
 				top: 0, left: 0, width: '100%', height: '100%',
 				display: 'flex', justifyContent: 'center', alignItems: 'center'
 			}}>
+				{overlayMessage &&
+					<div id='cameraOverlay' style={{
+						position: 'absolute',
+						top: 0, left: 0, width: '100%', height: '100%',
+						backgroundColor: 'rgba(0, 0, 0, 0.5)',
+						display: 'flex', justifyContent: 'center', alignItems: 'center',
+						color: 'white', fontSize: '24px', fontWeight: 'bold',
+						zIndex: 1
+					}}>
+						{overlayMessage}
+					</div>
+				}
 				<canvas id='cameraCanvas' style={{ maxWidth: '100%', maxHeight: '100%' }} />
 				<video id='cameraVideo' style={{ display: 'none' }} />
 			</div>

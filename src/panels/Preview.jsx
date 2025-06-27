@@ -13,14 +13,16 @@ import Panel from '../components/Panel.jsx';
 
 const Preview = ({
 	imageTemplate, setImageTemplate,
-	frameSettings, setFrameSettings
+	frameSettings, setFrameSettings,
+	stream, setStream
 }) => {
 	const [templateLoaded, setTemplateLoaded] = React.useState(false);
 	// Convert the image template URL to a Blob URL for preview
 	React.useEffect(() => {
 		const canvas = document.getElementById('previewCanvas');
-		const overlayDiv = document.getElementById('overlay');
-		if (!canvas || !overlayDiv) return;
+		const overlayDiv = document.getElementById('previewOverlay');
+		const underlayDiv = document.getElementById('previewUnderlay');
+		if (!canvas || !overlayDiv || !underlayDiv) return;
 
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
@@ -34,6 +36,8 @@ const Preview = ({
 			canvas.height = img.height;
 			overlayDiv.width = img.width;
 			overlayDiv.height = img.height;
+			underlayDiv.width = img.width;
+			underlayDiv.height = img.height;
 
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.drawImage(img, 0, 0);
@@ -50,7 +54,7 @@ const Preview = ({
 
 	// Draw frames on the overlay canvas
 	React.useEffect(() => {
-		const overlayDiv = document.getElementById('overlay');
+		const overlayDiv = document.getElementById('previewOverlay');
 		if (!overlayDiv || !templateLoaded) return;
 
 		const ctx = overlayDiv.getContext('2d');
@@ -69,6 +73,72 @@ const Preview = ({
 			ctx.fillText(`Frame ${frameSettings.indexOf(frame) + 1}`, frame.position.x + 6, frame.position.y + 12 + (16 / 2));
 		};
 	}, [frameSettings, templateLoaded]);
+
+	React.useEffect(() => {
+		const underlayDiv = document.getElementById('previewUnderlay');
+		const cameraCanvas = document.getElementById('cameraCanvas');
+		if (!underlayDiv || !cameraCanvas) return;
+		if (!underlayDiv || !stream) return;
+
+		const ctx = underlayDiv.getContext('2d');
+		const cameraCtx = cameraCanvas.getContext('2d');
+		if (!ctx || !cameraCtx) return;
+
+		ctx.clearRect(0, 0, underlayDiv.width, underlayDiv.height);
+
+		const availableFrame = frameSettings.filter(frame => !frame.buffer)[0];
+		if (!availableFrame) return;
+
+		const drawFrame = () => {
+			// Calculate aspect ratios
+			const streamAspect = cameraCanvas.width / cameraCanvas.height;
+			const frameAspect = availableFrame.size.width / availableFrame.size.height;
+
+			let drawWidth = availableFrame.size.width;
+			let drawHeight = availableFrame.size.height;
+			let offsetX = 0;
+			let offsetY = 0;
+
+			// Adjust dimensions to maintain aspect ratio
+			if (streamAspect > frameAspect) {
+				// Stream is wider - fit by height
+				drawHeight = availableFrame.size.height;
+				drawWidth = drawHeight * streamAspect;
+				offsetX = (availableFrame.size.width - drawWidth) / 2;
+			} else {
+				// Stream is taller - fit by width
+				drawWidth = availableFrame.size.width;
+				drawHeight = drawWidth / streamAspect;
+				offsetY = (availableFrame.size.height - drawHeight) / 2;
+			};
+
+			// Add clipping region
+			ctx.save();
+			ctx.beginPath();
+			ctx.rect(
+				availableFrame.position.x,
+				availableFrame.position.y,
+				availableFrame.size.width,
+				availableFrame.size.height
+			);
+			ctx.clip();
+
+			// Draw with calculated dimensions
+			ctx.drawImage(
+				cameraCanvas,
+				availableFrame.position.x + offsetX,
+				availableFrame.position.y + offsetY,
+				drawWidth,
+				drawHeight
+			);
+
+			// Remove clipping
+			ctx.restore();
+
+			requestAnimationFrame(drawFrame);
+		};
+		drawFrame();
+	}, [frameSettings, stream]);
 
 	return (
 		<Panel
@@ -103,9 +173,10 @@ const Preview = ({
 				top: 0, left: 0, width: '100%', height: '100%',
 				display: 'flex', justifyContent: 'center', alignItems: 'center'
 			}}>
-				<canvas id='previewCanvas' style={{ maxWidth: '100%', maxHeight: '100%' }} />
+				<canvas id='previewCanvas' style={{ position: 'relative', maxWidth: '100%', maxHeight: '100%', zIndex: 5 }} />
 
-				<canvas id='overlay' style={{ position: 'absolute', maxWidth: '100%', maxHeight: '100%', zIndex: 10 }} />
+				<canvas id='previewOverlay' style={{ position: 'absolute', maxWidth: '100%', maxHeight: '100%', zIndex: 10 }} />
+				<canvas id='previewUnderlay' style={{ position: 'absolute', maxWidth: '100%', maxHeight: '100%', zIndex: 1 }} />
 			</div>
 		</Panel>
 	);

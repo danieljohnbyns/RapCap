@@ -70,6 +70,7 @@ const Viewport = () => {
 		brightness: options.brightness || 100,
 		contrast: options.contrast || 100
 	});
+	const [stream, setStream] = React.useState(null);
 
 	// Media devices
 	React.useEffect(() => {
@@ -118,12 +119,14 @@ const Viewport = () => {
 			<Camera {...{
 				mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
 				resolution, setResolution,
-				videoSettings, setVideoSettings
+				videoSettings, setVideoSettings,
+				stream, setStream
 			}} />
 
 			<Preview {...{
 				imageTemplate, setImageTemplate,
-				frameSettings, setFrameSettings
+				frameSettings, setFrameSettings,
+				stream, setStream
 			}} />
 
 			<CameraSettings {...{
