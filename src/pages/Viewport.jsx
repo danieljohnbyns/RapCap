@@ -225,7 +225,7 @@ const Viewport = () => {
 								position: frame.position
 							}))}
 						>
-							{(fields, { add, remove }) => (
+							{(fields, { add, remove, move }) => (
 								<Flex vertical gap={16} justify='flex-start' align='stretch'>
 									{fields.map((field, index) => (
 										<Card key={field.key} title={`Frame ${index + 1}`} size='small'>
@@ -344,13 +344,14 @@ const Viewport = () => {
 														size='small'
 														icon={<UpOutlined />}
 														onClick={() => {
-															const newFrames = [...frameSettings];
 															if (index > 0) {
+																const newFrames = [...frameSettings];
 																const [movedFrame] = newFrames.splice(index, 1);
 																newFrames.splice(index - 1, 0, movedFrame);
 																setFrameSettings(newFrames);
 																setOptions({ frames: newFrames });
-															}
+																move(field.name, index - 1);
+															};
 														}}
 													/>
 													<Button
@@ -358,13 +359,14 @@ const Viewport = () => {
 														size='small'
 														icon={<DownOutlined />}
 														onClick={() => {
-															const newFrames = [...frameSettings];
-															if (index < newFrames.length - 1) {
+															if (index < fields.length - 1) {
+																const newFrames = [...frameSettings];
 																const [movedFrame] = newFrames.splice(index, 1);
 																newFrames.splice(index + 1, 0, movedFrame);
 																setFrameSettings(newFrames);
 																setOptions({ frames: newFrames });
-															}
+																move(field.name, index + 1);
+															};
 														}}
 													/>
 												</Flex>
