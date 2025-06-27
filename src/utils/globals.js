@@ -26,10 +26,6 @@ const globals = {
 	 * 				x: Number,
 	 * 				y: Number
 	 * 			},
-	 * 			resolution: {
-	 * 				width: Number,
-	 * 				height: Number
-	 * 			},
 	 * 			buffer: String | null
 	 * 		}[],
 	 * 		output: {
@@ -62,10 +58,6 @@ const globals = {
 					x: 40,
 					y: 60
 				},
-				resolution: {
-					width: 360,
-					height: 200
-				},
 				buffer: null
 			},
 			{
@@ -76,10 +68,6 @@ const globals = {
 				position: {
 					x: 40,
 					y: 300
-				},
-				resolution: {
-					width: 360,
-					height: 200
 				},
 				buffer: null
 			},
@@ -92,10 +80,6 @@ const globals = {
 					x: 40,
 					y: 540
 				},
-				resolution: {
-					width: 360,
-					height: 200
-				},
 				buffer: null
 			},
 			{
@@ -106,10 +90,6 @@ const globals = {
 				position: {
 					x: 458,
 					y: 60
-				},
-				resolution: {
-					width: 458,
-					height: 60
 				},
 				buffer: null
 			}
@@ -129,6 +109,7 @@ const globals = {
 	/** @type {(options: Partial<Options>, silent: Boolean) => Void} */
 	setOptions: (options, silent = false) => {
 		globals.options = { ...globals.options, ...options };
+		console.log(`${silent ? '[Silent] ' : ''}Options updated`, globals.options);
 
 		if (silent) return;
 		window.dispatchEvent(new CustomEvent('optionsUpdated', {
@@ -161,10 +142,10 @@ const globals = {
 
 // Load options from local storage on startup
 globals.loadOptions();
-setInterval(() => {
-	globals.saveOptions();
-}, 1000 * 5);
 
 window.globals = globals;
+setInterval(() => {
+	window.globals = globals;
+}, 1000 * 5); // Keep globals in sync with the window object
 
 export default globals;

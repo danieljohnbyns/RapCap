@@ -1,90 +1,24 @@
 .panel {
-	position: relative;
-
-	display: inline-flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	vertical-align: middle;
-}
-.panel > .container {
-	position: relative;
-
-	width: 100%;
 	height: 100%;
-
-	border-radius: 1rem;
-	border: solid 0.125rem var(--color-plain-complement);
-	background-color: color-mix(in oklab, var(--color-plain-complement) 50%, var(--color-dark));
-
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	
-	overflow: hidden;
 }
-
-
-
-.panel > .container > header {
-	position: relative;
-	width: 100%;
-	padding: 1rem 0;
-
-	text-align: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	background-color: var(--color-plain-complement);
-	z-index: 2;
+.panel .panel-header {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
 }
-
-
-
-.panel > .container > .content {
-	position: relative;
-	width: 100%;
+.panel .panel-body {
 	height: 100%;
-	padding: 2rem;
-
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-
-	z-index: 1;
-	overflow: auto;
+}
+.panel .panel-body,
+.panel .panel-footer {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 }
 
-
-
-.panel[data-swapy-highlighted] {
-	opacity: 1;
-	z-index: 10;
+.panel .panel-header > .ant-card-body,
+.panel .panel-footer > .ant-card-body {
+	padding: 1.2rem;
 }
-.panel[data-swapy-highlighted] > .container {
-	position: relative;
-	background-color: rgba(var(--rgb-plain), 0.25);
-	z-index: 10;
-}
-.panel[data-swapy-highlighted] > .container > header {
-	background-color: rgba(var(--rgb-plain), 0.75);
-}
-.panel.swapy-destination::before {
-	content: "";
-	position: absolute;
-	top: 1rem;
-	left: 1rem;
-	right: 1rem;
-	bottom: 1rem;
 
-	border-radius: 1rem;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	background-color: rgba(var(--rgb-primary-complement), 0.25);
-	z-index: -1;
+.panel .panel-body:has(~ .panel-footer){
+	border-radius: 0;
 }

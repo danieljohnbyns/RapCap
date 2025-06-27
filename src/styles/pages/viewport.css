@@ -1,95 +1,36 @@
-#viewport {
-	width: 100%;
+#viewport-card {
+	width: 100vw;
 	height: 100vh;
-	padding: 1rem;
+}
 
+#viewport-card > .ant-card-body {
 	display: grid;
-	grid-template:
-		"a a a b b b b b" 1fr
-		"a a a b b b b b" 1fr
-		"c c d d d e e e" 1fr
-		/ 1fr 1fr 1fr 1fr 1fr 1fr;
-	grid-gap: 1rem;
-
-	background-color: rgba(var(--rgb-primary), 0.25);
+	grid-template-columns: repeat(6, 1fr) repeat(6, 1fr); 
+	grid-template-rows: repeat(4, 1fr) repeat(2, 1fr); 
+	grid-template-areas: 
+		"a a a a a a b b b b b b"
+		"a a a a a a b b b b b b"
+		"a a a a a a b b b b b b"
+		"a a a a a a b b b b b b"
+		"c c c c d d d d e e e e"
+		"c c c c d d d d e e e e"; 
+	grid-gap: 1.6rem;
 
 	overflow: hidden;
 }
 
-#viewport > .panel:nth-child(1) {
+#viewport-card > .ant-card-body > .panel:nth-child(1) {
 	grid-area: a;
 }
-#viewport > .panel:nth-child(2) {
+#viewport-card > .ant-card-body > .panel:nth-child(2) {
 	grid-area: b;
 }
-#viewport > .panel:nth-child(3) {
+#viewport-card > .ant-card-body > .panel:nth-child(3) {
 	grid-area: c;
 }
-#viewport > .panel:nth-child(4) {
+#viewport-card > .ant-card-body > .panel:nth-child(4) {
 	grid-area: d;
 }
-#viewport > .panel:nth-child(5) {
+#viewport-card > .ant-card-body > .panel:nth-child(5) {
 	grid-area: e;
-}
-#viewport > .panel:not(:nth-child(1)):not(:nth-child(2)) {
-	max-height: calc(50vh - 16rem);
-}
-
-#cameraContainer,
-#previewContainer {
-	position: relative;
-	flex: 1;
-	overflow: auto;
-}
-#cameraControls,
-#previewControls {
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	gap: 1rem;
-}
-#cameraControls button,
-#previewControls button {
-	flex: 1 !important;
-	width: 100%;
-}
-
-#cameraOptionsContainer,
-#framesOptionsContainer,
-#outputOptionsContainer {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: stretch;
-	gap: 2rem;
-}
-
-#cameraOverlay > #border::before,
-#cameraOverlay > #border::after {
-	content: "";
-	position: absolute;
-	width: 0.5rem;
-	height: 4rem;
-
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-
-	box-sizing: 0 0 0.5rem var(--color-dark);
-
-	background-color: var(--color-light);
-	pointer-events: none;
-	z-index: 1;
-}
-#cameraOverlay > #border::before {
-	transform: translate(-50%, -50%) rotate(90deg);
-}
-#cameraOverlay > #counter {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
