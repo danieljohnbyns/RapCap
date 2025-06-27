@@ -3,9 +3,7 @@ import React from 'react';
 import {
 	Form,
 	Button,
-	Typography,
-	Select,
-	Image
+	Select
 } from 'antd';
 
 import {
@@ -21,13 +19,19 @@ import Panel from '../components/Panel.jsx';
 
 const Camera = ({
 	mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
-	resolution, setResolution
+	resolution, setResolution,
+	videoSettings, setFilterFunction
 }) => {
 	const options = globals.options;
 	const setOptions = (newOptions) => {
 		globals.setOptions(newOptions);
 		globals.saveOptions();
 	};
+
+	const videoSettingsRef = React.useRef(videoSettings);
+	React.useEffect(() => {
+		videoSettingsRef.current = videoSettings;
+	}, [videoSettings]);
 
 	React.useEffect(() => {
 		const canvas = document.getElementById('cameraCanvas');
@@ -38,19 +42,27 @@ const Camera = ({
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
 
+		let timeoutId;
+		let stream = null;
+
 		const handleVideoStream = async () => {
 			try {
 				canvas.width = 0;
 				canvas.height = 0;
 
-				const stream = await navigator.mediaDevices.getUserMedia({
+				// Handle media device selection
+				const deviceIdValue = typeof mediaDevice === 'string'
+					? mediaDevice
+					: mediaDevice?.deviceId;
+
+				stream = await navigator.mediaDevices.getUserMedia({
 					video: {
-						deviceId: mediaDevice ? { exact: mediaDevice } : undefined
+						deviceId: deviceIdValue ? { exact: deviceIdValue } : undefined
 					}
 				});
 				video.srcObject = stream;
 
-				video.onloadedmetadata = () => {
+				video.onloadedmetadata = async () => {
 					const videoTrack = stream.getVideoTracks()[0];
 					const settings = videoTrack.getSettings();
 
@@ -66,13 +78,29 @@ const Camera = ({
 			};
 		};
 
-		handleVideoStream();
-
 		const draw = () => {
 			if (video.readyState === video.HAVE_ENOUGH_DATA) {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				// Apply filters using current settings
+				ctx.filter = `
+					brightness(${videoSettingsRef.current.brightness}%) 
+					contrast(${videoSettingsRef.current.contrast}%)
+				`;
 				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-			};
-			requestAnimationFrame(draw);
+			}
+			timeoutId = setTimeout(draw, 1000 / 30); // 30 FPS
+		};
+
+		handleVideoStream();
+
+		// Cleanup function
+		return () => {
+			clearTimeout(timeoutId);
+			if (stream) {
+				stream.getTracks().forEach(track => track.stop());
+			}
+			video.srcObject = null;
 		};
 	}, [mediaDevice, mediaDevices]);
 
@@ -126,8 +154,8 @@ const Camera = ({
 				top: 0, left: 0, width: '100%', height: '100%',
 				display: 'flex', justifyContent: 'center', alignItems: 'center'
 			}}>
-				<canvas id='cameraCanvas' style={{ display: 'none' }} />
-				<video id='cameraVideo' style={{ maxWidth: '100%', maxHeight: '100%' }} />
+				<canvas id='cameraCanvas' style={{ maxWidth: '100%', maxHeight: '100%' }} />
+				<video id='cameraVideo' style={{ display: 'none' }} />
 			</div>
 		</Panel>
 	);

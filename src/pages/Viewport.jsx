@@ -66,6 +66,10 @@ const Viewport = () => {
 
 	const [mediaDevice, setMediaDevice] = React.useState(options.mediaDevice || []);
 	const [mediaDevices, setMediaDevices] = React.useState(options.mediaDevices || []);
+	const [videoSettings, setVideoSettings] = React.useState({
+		brightness: options.brightness || 100,
+		contrast: options.contrast || 100
+	});
 
 	// Media devices
 	React.useEffect(() => {
@@ -106,8 +110,6 @@ const Viewport = () => {
 		});
 	}, [frameSettings]);
 
-
-
 	// Image Template
 	const [imageTemplate, setImageTemplate] = React.useState(options.imageTemplate || 'https://picsum.photos/800/600');
 
@@ -115,7 +117,8 @@ const Viewport = () => {
 		<Card id='viewport-card' size='small' ref={container}>
 			<Camera {...{
 				mediaDevices, setMediaDevices, mediaDevice, setMediaDevice,
-				resolution, setResolution
+				resolution, setResolution,
+				videoSettings, setVideoSettings
 			}} />
 
 			<Preview {...{
@@ -125,7 +128,8 @@ const Viewport = () => {
 
 			<CameraSettings {...{
 				mediaDevices, setMediaDevices,
-				mediaDevice, setMediaDevice
+				mediaDevice, setMediaDevice,
+				videoSettings, setVideoSettings
 			}} />
 
 			<TemplateFrames {...{ frameSettings, setFrameSettings }} />

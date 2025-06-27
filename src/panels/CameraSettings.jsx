@@ -14,7 +14,8 @@ import Panel from '../components/Panel.jsx';
 
 const CameraSettings = ({
 	mediaDevices, setMediaDevices,
-	mediaDevice, setMediaDevice
+	mediaDevice, setMediaDevice,
+	videoSettings, setVideoSettings
 }) => {
 	const options = globals.options;
 	const [faceDetectionEnabled, setFaceDetectionEnabled] = React.useState(options.faceDetection);
@@ -73,9 +74,8 @@ const CameraSettings = ({
 						}}
 						value={options.brightness}
 						onChange={(value) => {
-							setOptions({
-								brightness: value
-							});
+							setVideoSettings(prev => ({ ...prev, brightness: value }));
+							setOptions({ brightness: value });
 						}}
 					/>
 				</Form.Item>
@@ -95,9 +95,8 @@ const CameraSettings = ({
 						}}
 						value={options.contrast}
 						onChange={(value) => {
-							setOptions({
-								contrast: value
-							});
+							setVideoSettings(prev => ({ ...prev, contrast: value }));
+							setOptions({ contrast: value });
 						}}
 					/>
 				</Form.Item>
