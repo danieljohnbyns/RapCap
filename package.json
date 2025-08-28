@@ -51,7 +51,7 @@
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.5.0",
     "swapy": "^1.0.5",
-    "sweetalert2": "^11.17.2",
+    "sweetalert2": "^11.22.4",
     "sweetalert2-react-content": "^5.1.0"
   }
 }
